@@ -13,7 +13,8 @@
 - Vite Plus: starter frontend formatting, lint and builds.
 - Redocly CLI: OpenAPI validation when the substantive contract is introduced.
 - PostgreSQL 17: local relational database.
-- Sail: local WSL Docker Engine commands backed by a small project-owned PHP 8.5/Node 24 image.
+- Herd: native Windows application runtime with isolated PHP 8.5.
+- WSL Docker Engine: PostgreSQL service; retained Sail PHP 8.5/Node 24 image is an application fallback.
 
 Exact PHP and JavaScript package versions live in the committed lock files. Versions above describe selected majors, not promises to upgrade automatically.
 
@@ -24,7 +25,7 @@ Exact PHP and JavaScript package versions live in the committed lock files. Vers
 - FFmpeg processing and poster generation, with media storage access controls and cleanup.
 - Reporting/moderation, logging/error monitoring and verified restore procedures before public launch.
 
-Herd is deferred at Russell's request. Hosting, object storage, mail delivery and monitoring vendors are not selected. Boost is development tooling, not a runtime AI feature or paid model integration.
+Herd is the verified local application runtime. PostgreSQL remains in WSL; Herd Pro is not required. Hosting, object storage, mail delivery and monitoring vendors are not selected. Boost is development tooling, not a runtime AI feature or paid model integration.
 
 ## References
 

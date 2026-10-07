@@ -56,10 +56,10 @@
       "@php artisan dev"
     ],
     "lint": [
-      "pint --parallel"
+      "@php vendor/bin/pint --parallel"
     ],
     "lint:check": [
-      "pint --parallel --test"
+      "@php vendor/bin/pint --parallel --test"
     ],
     "ci:check": [
       "Composer\\Config::disableProcessTimeout",
@@ -68,7 +68,7 @@
       "@test"
     ],
     "types:check": [
-      "phpstan analyse --memory-limit=512M"
+      "@php vendor/bin/phpstan analyse --memory-limit=512M"
     ],
     "test": [
       "@php artisan config:clear --ansi",

@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Travel Adventures · MVP outlook</title>
+        <style>
+            :root {
+                font-family:
+                    Inter,
+                    Segoe UI,
+                    system-ui,
+                    sans-serif;
+                color: #243b36;
+                background: #eef2ee;
+                font-synthesis: none;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+            }
+            .shell {
+                max-width: 1440px;
+                margin: auto;
+                padding: 32px 42px;
+            }
+            .top {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-bottom: 24px;
+                border-bottom: 1px solid #d3ddd4;
+            }
+            .brand {
+                font-weight: 750;
+                font-size: 20px;
+            }
+            .brand span {
+                color: #5a7664;
+                font-weight: 400;
+            }
+            .stamp {
+                font-size: 12px;
+                color: #60746b;
+            }
+            .intro {
+                display: flex;
+                justify-content: space-between;
+                gap: 30px;
+                align-items: center;
+                margin: 30px 0 24px;
+            }
+            .eyebrow {
+                font-size: 11px;
+                letter-spacing: 1.8px;
+                text-transform: uppercase;
+                font-weight: 750;
+                color: #657e6e;
+            }
+            h1 {
+                font-size: clamp(32px, 4vw, 48px);
+                letter-spacing: -1.8px;
+                margin: 8px 0 10px;
+                line-height: 1.1;
+            }
+            p {
+                line-height: 1.5;
+                margin: 0;
+                color: #60746b;
+            }
+            .pill {
+                padding: 9px 13px;
+                border-radius: 30px;
+                background: #fae7ba;
+                color: #705016;
+                font-size: 12px;
+                font-weight: 700;
+                white-space: nowrap;
+            }
+            .overview {
+                display: grid;
+                grid-template-columns: 1.5fr 1fr 1fr;
+                gap: 16px;
+            }
+            .card {
+                background: #fff;
+                border: 1px solid #dae3db;
+                border-radius: 16px;
+                padding: 23px;
+            }
+            .focus {
+                background: #163f34;
+                color: #fff;
+                border: 0;
+            }
+            .focus .eyebrow {
+                color: #a9c5b3;
+            }
+            .focus h2 {
+                font-size: 27px;
+                letter-spacing: -0.5px;
+                margin: 12px 0;
+            }
+            .focus p {
+                color: #c2d5c9;
+                font-size: 14px;
+            }
+            .nextline {
+                border-top: 1px solid #3b5e50;
+                margin-top: 20px;
+                padding-top: 16px;
+                font-size: 13px;
+                color: #c2d5c9;
+            }
+            .nextline strong {
+                color: white;
+                display: block;
+                margin-top: 5px;
+            }
+            .card h3 {
+                font-size: 18px;
+                margin: 12px 0;
+            }
+            .fact {
+                display: flex;
+                gap: 10px;
+                align-items: baseline;
+                margin: 12px 0;
+                font-size: 14px;
+            }
+            .dot {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: #51866b;
+                flex-shrink: 0;
+            }
+            .muted .dot {
+                background: #b9c5bc;
+            }
+            .small {
+                font-size: 12px;
+                color: #6c7f74;
+            }
+            .sectionhead {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin: 30px 0 14px;
+            }
+            .sectionhead h2 {
+                font-size: 20px;
+                margin: 0;
+                letter-spacing: -0.4px;
+            }
+            .sectionhead span {
+                font-size: 12px;
+                color: #6c7f74;
+            }
+            .path {
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                gap: 8px;
+            }
+            .step {
+                border-top: 4px solid #cdd8cf;
+                background: #f8faf7;
+                border-radius: 5px 5px 12px 12px;
+                padding: 16px 13px;
+                min-height: 138px;
+            }
+            .step.current {
+                border-color: #b68a3b;
+                background: #fcf3df;
+            }
+            .step .num {
+                font-size: 11px;
+                color: #738478;
+                font-weight: 700;
+            }
+            .step h3 {
+                font-size: 15px;
+                margin: 12px 0 9px;
+                line-height: 1.25;
+            }
+            .step p {
+                font-size: 11px;
+            }
+            .step.target {
+                border-color: #5b8b6d;
+                background: #e6eee4;
+            }
+            .bottom {
+                display: grid;
+                grid-template-columns: 1.2fr 1fr;
+                gap: 16px;
+                margin-top: 22px;
+            }
+            .gate {
+                display: grid;
+                grid-template-columns: 28px 1fr;
+                gap: 10px;
+                padding: 12px 0;
+                border-bottom: 1px solid #edf1ed;
+            }
+            .gate:last-child {
+                border: 0;
+            }
+            .gate .index {
+                font-size: 11px;
+                color: #88978b;
+                padding-top: 3px;
+            }
+            .gate strong {
+                display: block;
+                font-size: 14px;
+                margin-bottom: 4px;
+            }
+            .gate p {
+                font-size: 12px;
+            }
+            .decision {
+                display: flex;
+                justify-content: space-between;
+                gap: 14px;
+                padding: 13px 0;
+                border-bottom: 1px solid #edf1ed;
+                font-size: 13px;
+            }
+            .decision:last-child {
+                border: 0;
+            }
+            .decision span {
+                color: #728476;
+                font-size: 12px;
+                text-align: right;
+            }
+            .launch {
+                margin-top: 20px;
+                padding: 17px 21px;
+                border: 1px dashed #bbcbbd;
+                border-radius: 12px;
+                display: flex;
+                gap: 20px;
+                align-items: center;
+            }
+            .launch strong {
+                font-size: 13px;
+                white-space: nowrap;
+            }
+            .launch p {
+                font-size: 12px;
+            }
+            footer {
+                display: flex;
+                justify-content: space-between;
+                gap: 20px;
+                padding-top: 20px;
+                font-size: 11px;
+                color: #78897d;
+            }
+            a {
+                color: #526e5c;
+            }
+            a:focus-visible {
+                outline: 3px solid #b68a3b;
+            }
+            @media (min-width: 1600px) {
+                .shell {
+                    padding-top: 45px;
+                }
+            }
+            @media (max-width: 1050px) {
+                .shell {
+                    padding: 24px;
+                }
+                .overview {
+                    grid-template-columns: 1.3fr 1fr;
+                }
+                .overview > .card:last-child {
+                    grid-column: 1/-1;
+                }
+                .path {
+                    grid-template-columns: repeat(4, 1fr);
+                }
+                .step {
+                    min-height: 115px;
+                }
+            }
+            @media (max-width: 650px) {
+                .shell {
+                    padding: 20px 16px;
+                }
+                .top,
+                .intro {
+                    align-items: flex-start;
+                }
+                .top {
+                    gap: 12px;
+                }
+                .stamp {
+                    text-align: right;
+                }
+                .brand {
+                    font-size: 16px;
+                }
+                .intro {
+                    flex-direction: column;
+                    gap: 14px;
+                }
+                h1 {
+                    letter-spacing: -1px;
+                }
+                .overview,
+                .bottom {
+                    grid-template-columns: 1fr;
+                }
+                .overview > .card:last-child {
+                    grid-column: auto;
+                }
+                .path {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+                .sectionhead {
+                    gap: 12px;
+                }
+                .sectionhead span {
+                    text-align: right;
+                }
+                .launch,
+                footer {
+                    align-items: flex-start;
+                    flex-direction: column;
+                    gap: 8px;
+                }
+            }
+
+            /* Palette copied from the installed starter's resources/css/app.css. */
+            :root {
+                --background: hsl(0 0% 100%);
+                --foreground: hsl(0 0% 3.9%);
+                --card: hsl(0 0% 100%);
+                --card-foreground: hsl(0 0% 3.9%);
+                --popover: hsl(0 0% 100%);
+                --popover-foreground: hsl(0 0% 3.9%);
+                --primary: hsl(0 0% 9%);
+                --primary-foreground: hsl(0 0% 98%);
+                --secondary: hsl(0 0% 92.1%);
+                --secondary-foreground: hsl(0 0% 9%);
+                --muted: hsl(0 0% 96.1%);
+                --muted-foreground: hsl(0 0% 45.1%);
+                --accent: hsl(0 0% 96.1%);
+                --accent-foreground: hsl(0 0% 9%);
+                --destructive: hsl(0 84.2% 60.2%);
+                --destructive-foreground: hsl(0 0% 98%);
+                --border: hsl(0 0% 92.8%);
+                --input: hsl(0 0% 89.8%);
+                --ring: hsl(0 0% 3.9%);
+                --chart-1: hsl(12 76% 61%);
+                --chart-2: hsl(173 58% 39%);
+                --chart-3: hsl(197 37% 24%);
+                --chart-4: hsl(43 74% 66%);
+                --chart-5: hsl(27 87% 67%);
+                --radius: 0.5rem;
+                --sidebar-background: hsl(0 0% 98%);
+                --sidebar-foreground: hsl(240 5.3% 26.1%);
+                --sidebar-primary: hsl(0 0% 10%);
+                --sidebar-primary-foreground: hsl(0 0% 98%);
+                --sidebar-accent: hsl(0 0% 94%);
+                --sidebar-accent-foreground: hsl(0 0% 30%);
+                --sidebar-border: hsl(0 0% 91%);
+                --sidebar-ring: hsl(217.2 91.2% 59.8%);
+                --sidebar: hsl(0 0% 98%);
+                font-family:
+                    'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+                color: var(--foreground);
+                background: var(--background);
+                color-scheme: light dark;
+            }
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --background: hsl(0 0% 3.9%);
+                    --foreground: hsl(0 0% 98%);
+                    --card: hsl(0 0% 3.9%);
+                    --card-foreground: hsl(0 0% 98%);
+                    --popover: hsl(0 0% 3.9%);
+                    --popover-foreground: hsl(0 0% 98%);
+                    --primary: hsl(0 0% 98%);
+                    --primary-foreground: hsl(0 0% 9%);
+                    --secondary: hsl(0 0% 14.9%);
+                    --secondary-foreground: hsl(0 0% 98%);
+                    --muted: hsl(0 0% 16.08%);
+                    --muted-foreground: hsl(0 0% 63.9%);
+                    --accent: hsl(0 0% 14.9%);
+                    --accent-foreground: hsl(0 0% 98%);
+                    --destructive: hsl(0 84% 60%);
+                    --destructive-foreground: hsl(0 0% 98%);
+                    --border: hsl(0 0% 14.9%);
+                    --input: hsl(0 0% 14.9%);
+                    --ring: hsl(0 0% 83.1%);
+                    --chart-1: hsl(220 70% 50%);
+                    --chart-2: hsl(160 60% 45%);
+                    --chart-3: hsl(30 80% 55%);
+                    --chart-4: hsl(280 65% 60%);
+                    --chart-5: hsl(340 75% 55%);
+                    --sidebar-background: hsl(0 0% 7%);
+                    --sidebar-foreground: hsl(0 0% 95.9%);
+                    --sidebar-primary: hsl(360, 100%, 100%);
+                    --sidebar-primary-foreground: hsl(0 0% 100%);
+                    --sidebar-accent: hsl(0 0% 15.9%);
+                    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+                    --sidebar-border: hsl(0 0% 15.9%);
+                    --sidebar-ring: hsl(217.2 91.2% 59.8%);
+                    --sidebar: hsl(240 5.9% 10%);
+                }
+            }
+            .top {
+                border-color: var(--border);
+            }
+            .brand span,
+            .stamp,
+            .eyebrow,
+            p,
+            .small,
+            .sectionhead span,
+            .step .num,
+            .decision span,
+            footer {
+                color: var(--muted-foreground);
+            }
+            .card {
+                background: var(--card);
+                border-color: var(--border);
+                border-radius: var(--radius);
+            }
+            .focus {
+                background: var(--primary);
+                color: var(--primary-foreground);
+            }
+            .focus .eyebrow,
+            .focus p,
+            .nextline {
+                color: var(--primary-foreground);
+            }
+            .focus .eyebrow,
+            .focus p {
+                opacity: 0.8;
+            }
+            .nextline {
+                border-color: color-mix(
+                    in srgb,
+                    var(--primary-foreground) 25%,
+                    transparent
+                );
+            }
+            .nextline strong {
+                color: var(--primary-foreground);
+            }
+            .pill {
+                background: var(--secondary);
+                color: var(--secondary-foreground);
+            }
+            .dot {
+                background: var(--primary);
+            }
+            .muted .dot {
+                background: var(--muted-foreground);
+            }
+            .step {
+                background: var(--muted);
+                border-color: var(--border);
+                border-radius: var(--radius);
+            }
+            .step.current {
+                background: var(--secondary);
+                border-color: var(--primary);
+            }
+            .step.target {
+                background: var(--muted);
+                border-color: var(--muted-foreground);
+            }
+            .gate,
+            .decision {
+                border-color: var(--border);
+            }
+            .gate .index {
+                color: var(--muted-foreground);
+            }
+            .launch {
+                border-color: var(--input);
+                border-radius: var(--radius);
+            }
+            a {
+                color: var(--foreground);
+            }
+            a:focus-visible {
+                outline-color: var(--ring);
+            }
+        </style>
+    </head>
+    <body>
+        <main class="shell">
+            <header class="top">
+                <div class="brand">
+                    Travel Adventures <span>/ MVP outlook</span>
+                </div>
+                <div class="stamp">Planning snapshot<br />October 7, 2026</div>
+            </header>
+            <section class="intro">
+                <div>
+                    <div class="eyebrow">Delivery at a glance</div>
+                    <h1>Foundation built.<br />Product journey ahead.</h1>
+                    <p>
+                        The destination: create, add photos or a reel, publish,
+                        and share.
+                    </p>
+                </div>
+                <span class="pill"
+                    >Foundation verified &#183; product pending</span
+                >
+            </section>
+            <section class="overview" aria-label="Current product status">
+                <article class="card focus">
+                    <div class="eyebrow">Next milestone &#183; 1</div>
+                    <h2>Specify the first adventure</h2>
+                    <p>
+                        Design the data model, ownership rules and OpenAPI
+                        contract before implementation.
+                    </p>
+                    <div class="nextline">
+                        Following slice<strong
+                            >Create and view private adventures</strong
+                        >
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="eyebrow">Already in place</div>
+                    <h3>Development foundation</h3>
+                    <div class="fact">
+                        <i class="dot"></i>Laravel + Vue starter
+                    </div>
+                    <div class="fact">
+                        <i class="dot"></i>Herd PHP + WSL PostgreSQL
+                    </div>
+                    <div class="fact">
+                        <i class="dot"></i>Fortify, Wayfinder + Boost
+                    </div>
+                    <p class="small">
+                        42 tests / 143 assertions passed under Herd. Runtime
+                        docs updated; current transition CI pending.
+                    </p>
+                </article>
+                <article class="card">
+                    <div class="eyebrow">Still to build</div>
+                    <h3>The actual product</h3>
+                    <div class="fact muted">
+                        <i class="dot"></i>Adventure creation + publishing
+                    </div>
+                    <div class="fact muted">
+                        <i class="dot"></i>Photo uploads + video processing
+                    </div>
+                    <div class="fact muted">
+                        <i class="dot"></i>Feed, profiles + staged release
+                    </div>
+                    <p class="small">
+                        No adventure flow or product API contract yet. Photos
+                        and reels are required for MVP.
+                    </p>
+                </article>
+            </section>
+            <div class="sectionhead">
+                <h2>The path to a staged MVP</h2>
+                <span>Sequential gates · no dates committed</span>
+            </div>
+            <section class="path" aria-label="Milestones">
+                <article class="step verified">
+                    <div class="num">00 / VERIFIED</div>
+                    <h3>Runtime closure</h3>
+                    <p>Docs + checks agree</p>
+                </article>
+                <article class="step current">
+                    <div class="num">01 / NEXT TO SPECIFY</div>
+                    <h3>Adventure spec</h3>
+                    <p>Model + contract ready</p>
+                </article>
+                <article class="step">
+                    <div class="num">02 / PLANNED</div>
+                    <h3>Private drafts</h3>
+                    <p>Create + reopen safely</p>
+                </article>
+                <article class="step">
+                    <div class="num">03 / PLANNED</div>
+                    <h3>Publish + browse</h3>
+                    <p>Public stories, private drafts</p>
+                </article>
+                <article class="step">
+                    <div class="num">04 / REQUIRED</div>
+                    <h3>Photos</h3>
+                    <p>Upload, render + clean up</p>
+                </article>
+                <article class="step">
+                    <div class="num">05 / REQUIRED</div>
+                    <h3>Short reels</h3>
+                    <p>Process, poster + play</p>
+                </article>
+                <article class="step target">
+                    <div class="num">06 / MVP GATE</div>
+                    <h3>Staged pilot</h3>
+                    <p>Whole journey verified</p>
+                </article>
+            </section>
+            <section class="bottom">
+                <article class="card">
+                    <div class="eyebrow">What proves progress</div>
+                    <div class="gate">
+                        <span class="index">01</span>
+                        <div>
+                            <strong>First real product checkpoint</strong>
+                            <p>
+                                An author creates and reopens a private
+                                adventure. Other accounts cannot access it.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="gate">
+                        <span class="index">02</span>
+                        <div>
+                            <strong
+                                >Largest technical uncertainty: reels</strong
+                            >
+                            <p>
+                                A real upload processes and plays. Failed or
+                                repeated jobs keep content private and
+                                consistent.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="gate">
+                        <span class="index">03</span>
+                        <div>
+                            <strong>MVP means the whole journey</strong>
+                            <p>
+                                Stories, photos and reels work on staging with
+                                active workers and evidence for A01–A12.
+                            </p>
+                        </div>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="eyebrow">Decisions coming into view</div>
+                    <div class="decision">
+                        <strong>Audience + location</strong
+                        ><span>Before adventure spec</span>
+                    </div>
+                    <div class="decision">
+                        <strong>Visibility + published edits</strong
+                        ><span>Before publishing</span>
+                    </div>
+                    <div class="decision">
+                        <strong>Media limits + browsers</strong
+                        ><span>Before uploads / reels</span>
+                    </div>
+                    <div class="decision">
+                        <strong>Hosting, storage + budget</strong
+                        ><span>Before staging</span>
+                    </div>
+                    <p class="small" style="margin-top: 12px">
+                        Starting proposals remain provisional. Timing estimates
+                        follow the first slice and a reel-processing experiment.
+                    </p>
+                </article>
+            </section>
+            <aside class="launch">
+                <strong>07 / Public launch comes after MVP</strong>
+                <p>
+                    Moderation owner · reporting · privacy · abuse controls ·
+                    monitoring · verified backup restore + rollback
+                </p>
+            </aside>
+            <footer>
+                <span
+                    >Read-only snapshot maintained with the roadmap. Completion
+                    requires evidence, not a percentage.</span
+                ><a href="roadmap.md">Detailed roadmap ↗</a>
+            </footer>
+        </main>
+    </body>
+</html>

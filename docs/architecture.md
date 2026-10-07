@@ -1,12 +1,12 @@
 # Architecture direction
 
-Status: foundation decisions selected, runtime verification in progress.
+Status: foundation runtime selected and verified locally; product implementation pending.
 
 - Laravel application with a Vue/TypeScript frontend and explicit JSON API.
 - A modular monolith, keeping accounts, adventures and media separated internally without introducing distributed services.
-- Relational database; PostgreSQL is the proposed default. Confirm local and deployment support during foundation work.
+- PostgreSQL is the local application database, retained in WSL Docker Engine. Deployment support remains a staging decision.
 - Queue workers for media processing; object storage interface for media. Select concrete providers later.
-- WSL Ubuntu and Docker Engine for local development.
+- Native Windows Herd for PHP/HTTP and native Node/npm for assets; WSL Ubuntu Docker Engine for PostgreSQL. Sail remains a stopped application fallback.
 - Laravel Boost development dependency and Codex MCP integration.
 - OpenAPI as the designed API contract, validated in CI with behaviour tests against implemented endpoints.
 

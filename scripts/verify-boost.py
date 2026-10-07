@@ -1,19 +1,35 @@
 """Verify the local Boost stdio MCP handshake and application-info tool."""
+import argparse
 import json
-import selectors
+import queue
 import subprocess
+import sys
+from pathlib import Path
+import threading
 import time
 
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--php", default="php", help="PHP executable for the application runtime")
+arguments = parser.parse_args()
 process = subprocess.Popen(
-    ["./vendor/bin/sail", "artisan", "boost:mcp"],
+    [arguments.php, "artisan", "boost:mcp"],
     stdin=subprocess.PIPE,
     stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
+    stderr=sys.stderr,
+    cwd=Path(__file__).resolve().parents[1],
     text=True,
     bufsize=1,
 )
-selector = selectors.DefaultSelector()
-selector.register(process.stdout, selectors.EVENT_READ)
+responses = queue.Queue()
+
+
+def read_responses():
+    for line in process.stdout:
+        responses.put(line)
+    responses.put(None)
+
+
+threading.Thread(target=read_responses, daemon=True).start()
 
 
 def send(message):
@@ -24,9 +40,10 @@ def send(message):
 def receive(request_id):
     deadline = time.monotonic() + 30
     while time.monotonic() < deadline:
-        if not selector.select(timeout=1):
+        try:
+            line = responses.get(timeout=1)
+        except queue.Empty:
             continue
-        line = process.stdout.readline()
         if not line:
             raise RuntimeError("Boost exited before responding")
         response = json.loads(line)
@@ -52,8 +69,13 @@ try:
     if result.get("isError") or not result.get("content"):
         raise RuntimeError("Application-info returned an error or empty content")
     print(json.dumps({"mcp": "verified", "tool": name, "tool_count": len(names)}))
+    url_tool = next(name for name in names if name.replace("-", "_").lower() == "get_absolute_url")
+    send({"jsonrpc": "2.0", "id": 4, "method": "tools/call", "params": {"name": url_tool, "arguments": {"path": "/"}}})
+    url_result = receive(4)
+    if url_result.get("isError") or not url_result.get("content"):
+        raise RuntimeError("GetAbsoluteUrl returned an error")
+    print(json.dumps({"url": url_result["content"]}))
 finally:
-    selector.close()
     process.terminate()
     try:
         process.wait(timeout=5)

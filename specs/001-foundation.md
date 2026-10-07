@@ -1,16 +1,16 @@
 # 001: Development foundation
 
-Status: Verified locally
+Status: Verified locally under Herd; current transition CI pending
 
 ## Foundation decisions
 
-Use the official Laravel 13 Vue starter kit with Vue 3, TypeScript and Inertia. Browser authentication uses Fortify session cookies and CSRF protection. Future JSON adventure endpoints will be explicitly specified in OpenAPI; Inertia page responses are not the public API contract. PostgreSQL is the local application database. Sail uses WSL Docker Engine; Herd is deferred. PHP 8.5 and Node 24 are container runtime targets, subject to dependency resolution. The starter kit's account screens and tests are scaffolding, not completion of the product account specification.
+Use the official Laravel 13 Vue starter kit with Vue 3, TypeScript and Inertia. Browser authentication uses Fortify session cookies and CSRF protection. Future JSON adventure endpoints will be explicitly specified in OpenAPI; Inertia page responses are not the public API contract. PostgreSQL is the local application database. Native Windows Laravel Herd with PHP 8.5 is now the preferred application runtime. Retain the existing WSL Docker PostgreSQL service through localhost:48192 without purchasing Herd Pro. Retain the verified Sail fallback as a stopped application service. The starter kit's account screens and tests are scaffolding, not completion of the product account specification.
 
 OpenAPI tooling: Redocly CLI validation in CI, with behavioural endpoint contract tests added alongside each implemented API slice. No placeholder public API endpoints will be invented for foundation work.
 
 Testing and quality: Pest with its Laravel plugin; preserve starter coverage during conversion. Larastan/PHPStan, Pint, Vue TypeScript checks and Wayfinder are part of the foundation. Browser tests are introduced with actual product flows. Media uses queued, retry-safe processing in the media milestone.
 
-Runtime detail: use a project-owned PHP 8.5/Node 24 image with PostgreSQL and process-control extensions, accessed through Sail. The broad default Sail image was replaced after slow Ubuntu mirror retries exposed unnecessary image dependencies. Add media processing dependencies with their feature specification.
+Runtime detail: Herd uses isolated PHP 8.5.11 and native Windows Node 24. The retained Sail fallback uses a project-owned PHP 8.5/Node 24 image with PostgreSQL and process-control extensions. The broad default Sail image was replaced after slow Ubuntu mirror retries exposed unnecessary image dependencies. Add media processing dependencies with their feature specification.
 
 ## Outcome
 
@@ -18,7 +18,7 @@ A reproducible Laravel/Vue development environment with Boost available to Codex
 
 ## Acceptance criteria
 
-- F01: A clean checkout starts under WSL Ubuntu with Docker Engine using documented commands. Docker Desktop is unnecessary.
+- F01: A clean checkout starts under native Windows Herd using documented commands. PostgreSQL may run under WSL Docker Engine; Docker Desktop is unnecessary. Keep the previously verified Sail fallback during migration.
 - F02: Framework, PHP and Node versions are verified against official compatibility guidance and dependency versions are locked.
 - F03: Laravel Boost is installed using `composer require laravel/boost --dev`, configured through `php artisan boost:install`, and its Codex MCP connection is verified with a real application-info or documentation request.
 - F04: A database migration and a simple application test run successfully in the documented environment.
@@ -35,5 +35,7 @@ Inspect local tools; select supported versions; scaffold; configure runtime/data
 Feature implementation, media infrastructure provisioning, production deployment, paid service setup.
 
 ## Evidence
+
+Herd transition verified on 2026-10-07. PostgreSQL remains in the original WSL service and volume. Current transition checks and limitations are recorded in docs/foundation-validation.md; CI for these uncommitted changes remains pending.
 
 Validated on 2026-10-07. See docs/foundation-validation.md for results and limits. Boost installation reference: https://laravel.com/framework/docs/boost

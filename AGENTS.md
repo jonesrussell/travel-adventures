@@ -6,7 +6,7 @@ Laravel Boost is a priority and a foundation acceptance requirement. Install it 
 
 OpenAPI is the API contract. Specify operations, schemas, authentication, errors and examples before implementing endpoints. Keep the contract, implementation and tests aligned. Do not treat generated documentation as a substitute for design.
 
-Use Laravel, Vue and TypeScript. Local runtime is WSL Ubuntu with Docker Engine. Do not require Docker Desktop. Resolve framework versions during foundation work using current official documentation and lock dependencies.
+Use Laravel, Vue and TypeScript. The preferred local application runtime is native Windows Laravel Herd with PHP 8.5. PostgreSQL remains available through WSL Ubuntu Docker Engine on localhost:48192. Do not require Docker Desktop or a paid Herd Pro license. Retain the verified Sail fallback as a stopped application service; Herd verification has passed locally. Resolve framework versions during foundation work using current official documentation and lock dependencies.
 
 Use Pest for new tests, including feature and authorization tests. Retain upstream PHPUnit tests until their conversion preserves the original coverage. Use Larastan for static analysis, Pint for PHP formatting and Wayfinder for typed frontend routes. Browser tests are required for implemented publishing/media flows. Queue media processing with retry-safe jobs and explicit states. Avoid adding optional ecosystem services before their need is specified.
 
@@ -117,6 +117,13 @@ This project has domain-specific skills available in `**/skills/**`. You MUST ac
 # Deployment
 
 - Laravel can be deployed using [Laravel Cloud](https://cloud.laravel.com/), which is the fastest way to deploy and scale production Laravel applications.
+
+=== herd rules ===
+
+# Laravel Herd
+
+- The application is served by Laravel Herd at `https?://[kebab-case-project-dir].test`. Use the `get-absolute-url` tool to generate valid URLs. Never run commands to serve the site. It is always available.
+- Use the `herd` CLI to manage services, PHP versions, and sites (e.g. `herd sites`, `herd services:start <service>`, `herd php:list`). Run `herd list` to discover all available commands.
 
 === tests rules ===
 
