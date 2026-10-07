@@ -1,0 +1,25 @@
+name: Foundation checks
+on: [push, pull_request]
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: pdo_sqlite, pdo_pgsql
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - run: composer install --no-interaction --prefer-dist
+      - run: cp .env.example .env && php artisan key:generate
+      - run: npm ci
+      - run: php artisan wayfinder:generate --with-form
+      - run: npm run check
+      - run: npm run types:check
+      - run: npm run build
+      - run: composer test
+      - run: npm run api:lint

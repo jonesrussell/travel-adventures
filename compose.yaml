@@ -1,0 +1,38 @@
+services:
+    laravel.test:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: travel-adventures-sail:8.5
+        ports:
+            - '127.0.0.1:${APP_PORT:-48190}:8000'
+            - '127.0.0.1:${VITE_PORT:-48191}:5173'
+        environment:
+            WWWUSER: '${WWWUSER:-1000}'
+            LARAVEL_SAIL: 1
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        volumes:
+            - '.:/var/www/html'
+        depends_on:
+            pgsql:
+                condition: service_healthy
+    pgsql:
+        image: postgres:17-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+        ports:
+            - '127.0.0.1:${FORWARD_DB_PORT:-48192}:5432'
+        environment:
+            POSTGRES_DB: '${DB_DATABASE:-travel_adventures}'
+            POSTGRES_USER: '${DB_USERNAME:-sail}'
+            POSTGRES_PASSWORD: '${DB_PASSWORD:-local-development-only}'
+        volumes:
+            - 'pgsql:/var/lib/postgresql/data'
+        healthcheck:
+            test:
+                [
+                    'CMD-SHELL',
+                    'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"',
+                ]
+            retries: 5
+            interval: 5s
+volumes:
+    pgsql:

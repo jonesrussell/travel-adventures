@@ -1,6 +1,6 @@
 # Architecture direction
 
-Status: proposed foundation, subject to runtime verification.
+Status: foundation decisions selected, runtime verification in progress.
 
 - Laravel application with a Vue/TypeScript frontend and explicit JSON API.
 - A modular monolith, keeping accounts, adventures and media separated internally without introducing distributed services.
@@ -10,7 +10,7 @@ Status: proposed foundation, subject to runtime verification.
 - Laravel Boost development dependency and Codex MCP integration.
 - OpenAPI as the designed API contract, validated in CI with behaviour tests against implemented endpoints.
 
-Decide the frontend integration and authentication model in foundation work. A same-origin web app can use session authentication; do not introduce bearer tokens solely because the retired mobile prototype used them. Keep API design usable by a future mobile client without promising one now.
+Use the official Vue starter kit with Inertia, TypeScript and Fortify session authentication for the same-origin browser application. Explicit JSON adventure endpoints will have OpenAPI contracts. Inertia page payloads are not the public API. Do not introduce bearer tokens solely because the retired mobile prototype used them. Keep API design usable by a future mobile client without promising one now.
 
 Media lifecycle: uploaded privately, validated, processed, ready or failed, then exposed only when its adventure is published. Removal must clean up derivative files and avoid orphaned storage. Repeated jobs must not duplicate media or corrupt state.
 

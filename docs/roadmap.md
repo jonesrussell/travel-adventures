@@ -1,14 +1,14 @@
 # Roadmap
 
-## 0. Product and specification foundation (current)
+## 0. Product and specification foundation (complete)
 
 Deliver product brief, roadmap, architecture decisions and acceptance criteria. Identify open decisions. Preserve prototype history. No application implementation in this milestone.
 
-## 1. Development foundation
+## 1. Development foundation (verified locally)
 
 Deliver Laravel/Vue scaffold, reproducible WSL Docker runtime, database, CI and verified Laravel Boost/Codex integration. Establish OpenAPI validation and contract testing workflow. Exit criteria: specs/001-foundation.md.
 
-## 2. Core adventures
+## 2. Core adventures (next)
 
 Deliver account authentication, drafts, publishing, paginated feed, adventure detail, profiles and author editing/deletion. Specify the OpenAPI contract before endpoints. Verify ownership and unpublished-content isolation.
 

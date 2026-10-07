@@ -1,6 +1,16 @@
 # 001: Development foundation
 
-Status: Draft
+Status: Verified locally
+
+## Foundation decisions
+
+Use the official Laravel 13 Vue starter kit with Vue 3, TypeScript and Inertia. Browser authentication uses Fortify session cookies and CSRF protection. Future JSON adventure endpoints will be explicitly specified in OpenAPI; Inertia page responses are not the public API contract. PostgreSQL is the local application database. Sail uses WSL Docker Engine; Herd is deferred. PHP 8.5 and Node 24 are container runtime targets, subject to dependency resolution. The starter kit's account screens and tests are scaffolding, not completion of the product account specification.
+
+OpenAPI tooling: Redocly CLI validation in CI, with behavioural endpoint contract tests added alongside each implemented API slice. No placeholder public API endpoints will be invented for foundation work.
+
+Testing and quality: Pest with its Laravel plugin; preserve starter coverage during conversion. Larastan/PHPStan, Pint, Vue TypeScript checks and Wayfinder are part of the foundation. Browser tests are introduced with actual product flows. Media uses queued, retry-safe processing in the media milestone.
+
+Runtime detail: use a project-owned PHP 8.5/Node 24 image with PostgreSQL and process-control extensions, accessed through Sail. The broad default Sail image was replaced after slow Ubuntu mirror retries exposed unnecessary image dependencies. Add media processing dependencies with their feature specification.
 
 ## Outcome
 
@@ -26,4 +36,4 @@ Feature implementation, media infrastructure provisioning, production deployment
 
 ## Evidence
 
-Pending implementation. Boost installation reference: https://laravel.com/framework/docs/boost
+Validated on 2026-10-07. See docs/foundation-validation.md for results and limits. Boost installation reference: https://laravel.com/framework/docs/boost

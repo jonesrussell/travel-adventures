@@ -10,7 +10,8 @@ The Expo prototype is preserved at Git tag `prototype-before-rebuild-2026-10-07`
 - [Roadmap](docs/roadmap.md)
 - [Development workflow](docs/sdd-workflow.md)
 - [Architecture](docs/architecture.md)
+- [Local development](docs/development.md)
 - [Foundation specification](specs/001-foundation.md)
 - [First release specification](specs/002-first-release.md)
 
-Status: planning foundation. No runnable rebuilt application yet.
+Status: development foundation verified locally. Official Laravel/Vue account and dashboard scaffolding is installed; adventure features are not implemented yet. See [validation evidence](docs/foundation-validation.md).
