@@ -1,5 +1,7 @@
 # Development guidance
 
+Keep only one active work branch besides main, locally and on origin. Continue on the existing work branch rather than creating a branch for each slice. Preserve commits before removing obsolete branches.
+
 Use Spec Driven Development (SDD). Read the product brief, roadmap and relevant specification before changing code. Implement only the current milestone. Update the specification before materially changing behaviour.
 
 Laravel Boost is a priority and a foundation acceptance requirement. Install it as a development dependency, configure Codex through its installer, and verify the MCP connection before feature implementation. Consult its package-aware documentation tools when available. Keep project guidance outside generated Boost sections.
