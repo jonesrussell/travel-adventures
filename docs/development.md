@@ -82,4 +82,26 @@ From WSL `/mnt/c/dev/travel-adventures`, start with `./vendor/bin/sail up -d`, r
 
 ## API contracts
 
-Redocly validates `contracts/openapi.yaml` once the first substantive contract exists. Until then `api:lint` explicitly skips contract lint and rejects an API routes file without a contract. Passing this guard is not endpoint contract coverage. Adventure features and media processing are not implemented.
+Redocly validates the private adventure API contract in `contracts/openapi.yaml` through `npm run api:lint`. Pest tests verify implemented responses and failure cases. Author screens, editing, publishing and media processing remain unimplemented.
+
+## Private adventure API checks
+
+The three session-backed operations are POST /api/v1/adventures, GET /api/v1/adventures and GET /api/v1/adventures/{adventure}. Require Accept: application/json; creation requires an uncompressed JSON object and normal web CSRF protection. Existing Fortify pages establish the session. No adventure author pages exist yet; page_path is a future page target.
+
+The API and story tests run in SQLite by default. PostgreSQL checks use the separate local travel_adventures_test database in the existing WSL container. Never point RefreshDatabase tests at the application database. Create the isolated database once with the configured local database role, migrate it, then run:
+
+```powershell
+$env:DB_CONNECTION = 'pgsql'
+$env:DB_DATABASE = 'travel_adventures_test'
+try {
+    herd php artisan migrate --no-interaction
+    herd php artisan test --compact tests/Feature/AdventureApiTest.php tests/Feature/AdventurePostgresStorageTest.php
+    $env:RUN_POSTGRES_CONCURRENCY = '1'
+    herd php artisan test --compact tests/Feature/AdventureCreationConcurrencyTest.php
+} finally {
+    Remove-Item Env:DB_CONNECTION, Env:DB_DATABASE
+    Remove-Item Env:RUN_POSTGRES_CONCURRENCY -ErrorAction SilentlyContinue
+}
+```
+
+Concurrency tests use parallel PHP processes against committed test records, clean up their records and require a database name ending in _test. Default SQLite runs skip the PostgreSQL-only checks. CI has a separate PostgreSQL 17 service and job; its result must be checked after pushing.

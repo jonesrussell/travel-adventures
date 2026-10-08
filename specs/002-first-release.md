@@ -35,8 +35,8 @@ Payments, messaging, recommendation algorithms, native mobile rebuild and trip p
 
 ## Evidence
 
-Pending implementation.
+Partial evidence: adventure storage and the private draft create/list/view API pass local Pest, PostgreSQL and concurrent retry checks. A02/A03/A11 have API evidence; author screens, publication, media and staged end-to-end evidence remain pending. See specs/003-adventures.md for exact checks and scope.
 
 ## Current stage planning
 
-Adventure creation and publishing is being refined in `specs/003-adventures.md` and the readable `docs/adventure-planner.html` sidecar. It remains Draft; proposals and unresolved decisions do not authorize implementation.
+Adventure creation and publishing is being refined in `specs/003-adventures.md` and the readable `docs/adventure-planner.html` sidecar. The private API slice is Verified locally under implementation authorization. The broader publishing stage remains Draft; author screens are next, with later contract extensions still required.

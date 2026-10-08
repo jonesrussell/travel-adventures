@@ -2,12 +2,11 @@ openapi: 3.1.0
 info:
     title: Travel Adventures API
     version: 0.1.0
-    description:
-        'DESIGN CONTRACT ONLY. These operations are not implemented. First
+    description: 'PRIVATE DRAFT API IMPLEMENTED AND LOCALLY VERIFIED. First
         slice: private draft create/list/detail; autosave update, publication, trash and
         public reads are future contract extensions. Same-origin Fortify session auth
         with default web CSRF middleware. No bearer tokens or public login API. Authentication
-        occurs through existing account pages. No live deployment implied.'
+        occurs through existing account pages. page_path identifies a future HTML page; those pages are not implemented by this API slice. No live deployment implied.'
     license:
         name: MIT
         identifier: MIT
@@ -29,7 +28,7 @@ paths:
             description:
                 'First-slice scope: draft-only owner list, excluding published/trashed
                 rows. Fixed page size 12, updated_at DESC then id DESC. Opaque validated cursor
-                uses Laravel cursor encoding; reject invalid/noncanonical cursor with 422.
+                uses canonical Laravel cursor encoding of updated_at (database-format timestamp), positive integer id and boolean direction; reject invalid/noncanonical cursor with 422.
                 Live pagination is deterministic but not a frozen snapshot when editing changes
                 updated_at; UI deduplicates by ID. No title/story filter. Later slices expand
                 owner status views explicitly.'
@@ -52,6 +51,14 @@ paths:
                       maxLength: 2048
                   description: Opaque cursor from meta. Omit for first page.
             responses:
+                '406':
+                    description: Accept must include application/json.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                message: Accept application/json is required.
                 '401':
                     $ref: '#/components/responses/Unauthenticated'
                 '200':
@@ -116,6 +123,14 @@ paths:
                   schema:
                       type: string
             responses:
+                '406':
+                    description: Accept must include application/json.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                message: Accept application/json is required.
                 '401':
                     $ref: '#/components/responses/Unauthenticated'
                 '201':
@@ -159,6 +174,22 @@ paths:
                     $ref: '#/components/responses/Validation'
                 '413':
                     $ref: '#/components/responses/PayloadTooLarge'
+                '400':
+                    description: Body must be a valid JSON object.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                message: A valid JSON object is required.
+                '415':
+                    description: Creation requires application/json and an uncompressed body.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                message: An uncompressed application/json body is required.
             requestBody:
                 required: true
                 description: JSON body <= 524288 bytes; story has separate 262144-byte limit.
@@ -209,6 +240,14 @@ paths:
             parameters:
                 - *id001
             responses:
+                '406':
+                    description: Accept must include application/json.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error'
+                            example:
+                                message: Accept application/json is required.
                 '401':
                     $ref: '#/components/responses/Unauthenticated'
                 '200':
@@ -466,6 +505,7 @@ components:
                     maxLength: 200
                     description: Trim; blank becomes null. Optional for drafts.
                 travel_start_date: &id004
+                    description: Calendar date in years 0001 through 9999; year zero is invalid.
                     type:
                         - string
                         - 'null'
@@ -474,7 +514,7 @@ components:
             required:
                 - creation_key
             description:
-                Unknown fields, including ownership/publication/version input,
+                Only JSON body fields are used. Unknown fields, including ownership/publication/version input,
                 are rejected. Missing story becomes an empty paragraph document. End date
                 requires start and must not precede it. Future dates allowed in drafts. Dates
                 do not affect feed ordering.
@@ -715,7 +755,7 @@ components:
                         message: Creation key conflicts with an existing request.
         PayloadTooLarge:
             description:
-                Decoded request body exceeds 524288 bytes. Application must return
+                Raw UTF-8 request body exceeds 524288 bytes. Application must return
                 JSON; deployment request limits must be aligned.
             content:
                 application/json:

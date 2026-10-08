@@ -33,6 +33,9 @@ class AdventurePolicy
         return $this->ownerResponse($user, $adventure);
     }
 
+    /**
+     * Hide other authors' records and trash using the same response as a missing record.
+     */
     private function ownerResponse(User $user, Adventure $adventure): Response
     {
         return $adventure->getAttribute('user_id') === $user->id && ! $adventure->trashed()

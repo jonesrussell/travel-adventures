@@ -640,23 +640,26 @@
                     Travel Adventures <span>/ Stage planner</span>
                 </div>
                 <div class="stamp">
-                    October 7, 2026<br />Storage verified · paused after step 3
+                    October 7, 2026<br />Private draft API verified locally
                 </div>
             </header>
             <section class="stage-intro">
                 <div class="eyebrow">Adventure creation + publishing</div>
                 <h1>A private story.<br />An intentional public release.</h1>
                 <p class="lede">
-                    Steps 1–3 complete: planning committed, implementation
-                    branch prepared, adventure storage and owner policies
-                    verified. Paused before endpoints and author screens.
-                    Creation-key replay handling is still to build.
+                    Step 4 complete locally: create, list and reopen private
+                    drafts through the JSON API. Ownership, validation and retry
+                    handling are verified. Next: author screens. Publishing
+                    remains a later slice.
                 </p>
             </section>
             <section class="card">
                 <div class="eyebrow">Completed through step 3</div>
                 <h2>Storage and ownership</h2>
-                <p>Baseline commit f504a16. Branch: rebuild/sdd-foundation.</p>
+                <p>
+                    Storage is merged into main. Current work:
+                    codex/private-adventure-api.
+                </p>
                 <p>
                     Adventure model and User relationship, PostgreSQL migration,
                     factory, opt-in seeder and discovered owner policy are
@@ -678,14 +681,62 @@
                 <p>
                     Verified: eight SQLite storage/policy tests (36 assertions),
                     two PostgreSQL transaction tests (3 assertions), schema
-                    through Boost. No product endpoints or screens exist.
-                    Policies are not yet wired to HTTP requests. Concurrent
-                    replay handling remains unimplemented.
+                    through Boost. The API now invokes these policies; author
+                    screens and publishing remain to build.
                 </p>
                 <p>
-                    Next step 4: implement the contracted private
-                    create/list/view endpoints and their validation, retry
-                    handling and authorization tests.
+                    Step 4 is verified locally. Next step 5: create the author
+                    screens using these endpoints. Update/autosave operations
+                    need a contract extension before implementation.
+                </p>
+            </section>
+            <section class="card section">
+                <div class="eyebrow">Step 4 · Verified locally</div>
+                <h2>Private draft API</h2>
+                <ul class="list">
+                    <li>
+                        Create a draft with an editable generated title,
+                        optional story, location and travel dates. Saving always
+                        remains private.
+                    </li>
+                    <li>
+                        Repeat the same submission safely: identical creation
+                        key and normalized content return the existing draft.
+                        Conflicting content or unavailable drafts return 409.
+                    </li>
+                    <li>
+                        List twelve owner drafts at a time and reopen an owner
+                        draft. Other authors, publication and trash are
+                        excluded.
+                    </li>
+                    <li>
+                        Supported formatting, safe links and bounded story trees
+                        are validated on the server. JSON errors never expose
+                        private records.
+                    </li>
+                </ul>
+                <p>
+                    Current files: app/Actions/Adventures/CreateAdventure.php;
+                    app/Http/Controllers/Api/V1/AdventureController.php;
+                    app/Http/Requests/Adventures/{StoreAdventureRequest,ListAdventuresRequest}.php;
+                    app/Http/Resources/{AdventureResource,AdventureSummaryResource}.php;
+                    app/Http/Middleware/RequireAdventureJson.php;
+                    app/Rules/StoryDocument.php; routes/api.php;
+                    bootstrap/app.php; app/Models/Adventure.php;
+                    tests/Feature/{AdventureApiTest,StoryDocumentTest,AdventureCreationConcurrencyTest}.php;
+                    .github/workflows/checks.yml and the existing planning
+                    documents.
+                </p>
+                <p>
+                    Checks: full SQLite suite 120 passed, 387 assertions, four
+                    PostgreSQL-only skips; separate PostgreSQL API/storage and
+                    parallel retry checks. A PostgreSQL 17 CI job is configured;
+                    its remote result is pending.
+                </p>
+                <p>
+                    No HTML adventure pages, autosave updates, publication,
+                    photos or reels are implemented. Returned page paths are
+                    future screen targets.
                 </p>
             </section>
             <div class="columns">
@@ -857,10 +908,11 @@
                     later slices.
                 </p>
                 <p class="note">
-                    Redocly contract validation passed directly. This proves
-                    contract structure, not endpoint behavior. A Windows Node
-                    shutdown assertion occurred once through npm; endpoint and
-                    browser tests remain pending.
+                    Pest verifies creation, owner-only list/detail, retries,
+                    validation, cursor pages, transport errors and CSRF
+                    enforcement. PostgreSQL checks cover JSONB and parallel
+                    creation attempts. Browser coverage will accompany the
+                    actual author and publishing flows.
                 </p>
                 <a href="../contracts/openapi.yaml">Designed API contract</a>
             </section>
@@ -1213,8 +1265,9 @@
                 <p class="note">
                     Initial private create/view contract is designed and
                     validated. Extend it before implementing later operations.
-                    Full decisions are recorded in the stage specification. No
-                    packages installed or product code generated.
+                    Full decisions are recorded in the stage specification.
+                    Storage and private API code are implemented. Editor
+                    dependencies and screens remain pending.
                 </p>
             </section>
             <section class="section">

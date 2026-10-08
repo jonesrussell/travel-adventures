@@ -16,6 +16,8 @@ Never commit secrets. Public media must be explicitly published. Enforce ownersh
 
 Test observable behaviour, especially authorization, validation, media lifecycle and publication. Report checks actually performed. Do not claim deployment, backups or processing works until verified.
 
+Document non-obvious decisions, constraints and invariants close to the handwritten code they explain. Explain why unusual authorization, retry, concurrency, normalization or framework integration behaviour is necessary. Use useful PHPDoc for contracts, array shapes and types that native declarations cannot express; follow framework guidance on PHPDoc versus inline comments and use appropriate comment syntax in other languages. Avoid narrating obvious code, commenting every method or copying full specifications. Keep explanations aligned with behaviour changes. Review changed code for missing rationale and stale comments before marking each slice verified; do not annotate generated or vendor files merely to satisfy this standard.
+
 Preserve the prototype tag and unrelated user changes. No production deployment or paid services without a concrete deployment decision. No em dashes in prose to Russell.
 
 ===

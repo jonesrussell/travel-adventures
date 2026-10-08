@@ -1,6 +1,6 @@
 # Roadmap to MVP
 
-Planning baseline: 2026-10-07. Features remain unimplemented. This expands the product brief and specs/002-first-release.md. Proposed choices below are not confirmed requirements.
+Planning baseline: 2026-10-07. Adventure storage and private draft API are verified locally; author screens and later features remain to build. This expands the product brief and specs/002-first-release.md. Proposed choices below are not confirmed requirements.
 
 ## Product outcome
 
@@ -8,7 +8,7 @@ An author registers, drafts a story and location, adds photos or a short reel, p
 
 ## Existing foundation
 
-The official Laravel/Vue/TypeScript starter, Fortify and Wayfinder are installed. Herd PHP 8.5.11, 42 passing tests and 143 assertions were reverified during runtime closure; see foundation-validation.md. PostgreSQL remains in WSL Docker Engine at 127.0.0.1:48192; no database relocation occurred. The prototype tag is prototype-before-rebuild-2026-10-07. Runtime transition changes remain uncommitted; active-runtime docs now describe Herd and the WSL database. No product adventure API contract or media processing exists yet.
+The official Laravel/Vue/TypeScript starter, Fortify and Wayfinder are installed. Herd PHP 8.5.11, 42 passing tests and 143 assertions were reverified during runtime closure; see foundation-validation.md. PostgreSQL remains in WSL Docker Engine at 127.0.0.1:48192; no database relocation occurred. The prototype tag is prototype-before-rebuild-2026-10-07. The runtime transition and adventure storage are merged into main. Active-runtime docs describe Herd and the WSL database. The private adventure API contract and endpoints are implemented and locally verified on codex/private-adventure-api. Media processing remains to build.
 
 ## 0. Close the runtime transition
 
@@ -27,7 +27,7 @@ Exit: Documented setup and checks agree with the actual Herd/WSL runtime.
 
 ## 1. Specify the first adventure slice
 
-Status: Draft. Dependency: stage 0. Acceptance: A02, A03, A06, A11.
+Status: Ready. Dependency: stage 0. Acceptance: A02, A03, A06, A11.
 
 Design the adventure model, authorization matrix, create/view UI and substantive OpenAPI contract before endpoints.
 
@@ -41,7 +41,7 @@ Exit: A Ready specification and valid contract cover success and failure behavio
 
 ## 2. Create and view private adventures
 
-Status: Draft. Dependency: stage 1. Acceptance: A02, A03, A06, A11.
+Status: Implementing. Private API verified locally; author screens pending. Dependency: stage 1. Acceptance: A02, A03, A06, A11.
 
 Deliver a complete authenticated create/view draft flow through UI and designed JSON endpoints.
 

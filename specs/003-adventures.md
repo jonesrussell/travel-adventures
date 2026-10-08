@@ -1,6 +1,6 @@
 # 003: Adventure creation and publishing
 
-Status: Draft for the full stage; private create/list/view contract designed and validated on 2026-10-07. No product implementation authorized by this planning pass.
+Status: Private create/list/view API Verified locally on 2026-10-07. Author screens remain to build; the full publishing stage remains Draft. Storage is merged into main.
 
 ## Stage and slices
 
@@ -23,7 +23,7 @@ This stage refines first-release criteria A02–A06, A10 and A11. Design the who
 
 ## Agreed behavior and proposed technical representation
 
-Product decisions below are agreed unless explicitly labelled Proposed or Open. Technical representation and the contract still require design.
+Product decisions below are agreed unless explicitly labelled Proposed or Open. Selected technical design and the first-slice contract supersede historical proposals below.
 
 - Owner: Assigned by the server. Never accepted from submitted input.
 - Title: every saved draft has a title. Agreed: generate a default when the author leaves it blank; authors can edit it. Agreed: 1–160 characters and date-based default "Adventure · October 7, 2026". Proposed: application timezone.
@@ -37,7 +37,7 @@ Product decisions below are agreed unless explicitly labelled Proposed or Open. 
 
 One user owns many adventures. An adventure belongs to one user. Future media will belong to its adventure, but no media tables or jobs are part of the private-draft slice.
 
-Propose session-cookie authentication with CSRF for same-origin mutations, consistent with the foundation. Separate Inertia page delivery from JSON resource operations. Propose versioned `/api/v1/adventures` operations; final paths, errors, payloads and authentication examples must be designed in `contracts/openapi.yaml` before implementation. contracts/openapi.yaml now designs private draft create, owner list and owner detail only; all operations remain unimplemented.
+Propose session-cookie authentication with CSRF for same-origin mutations, consistent with the foundation. Separate Inertia page delivery from JSON resource operations. Propose versioned `/api/v1/adventures` operations; final paths, errors, payloads and authentication examples must be designed in `contracts/openapi.yaml` before implementation. contracts/openapi.yaml now designs private draft create, owner list and owner detail only; those three operations are implemented and locally verified; HTML screens and other operations remain unimplemented.
 
 Propose unauthenticated JSON access returns 401; authenticated attempts to inspect or mutate another author's draft return 404 to avoid existence disclosure. Validation returns 422. CSRF/session-expiry behavior and authentication/verification failures must be specified explicitly before the contract is Ready. Never rely on opaque identifiers for authorization.
 
@@ -140,7 +140,7 @@ Public reads require current published state. Propose unpublishing removes publi
 
 ## Selected technical design
 
-Agreed on 2026-10-07 under Russell's authorization to select recommendations. These choices supersede earlier Proposed/Open technical annotations in this document. No product code or dependencies have been installed. Resolve and lock compatible package versions during authorized implementation.
+Agreed on 2026-10-07 under Russell's authorization to select recommendations. These choices supersede earlier Proposed/Open technical annotations in this document. Storage and private API code are implemented. Editor dependencies remain uninstalled; resolve and lock compatible package versions during the author-screen slice.
 
 ### Story
 
@@ -197,7 +197,7 @@ The private create/list/view slice is design-ready. It does not yet implement au
 
 ### Acceptance coverage required at implementation
 
-A02: create with generated/custom title, authenticated unverified owner, initial version 1, repeat/concurrent creation key behavior. A03/A06: owner isolation, guests, unavailable IDs and no private account leakage. A10/A11: formatting boundaries/unsafe links, length/tree/body limits, unknown ownership input, travel-date validation, session/CSRF failures, cursor validation, deterministic tie ordering and empty/final pages. PostgreSQL verifies JSON storage and unique owner-scoped creation keys. No such endpoint tests have run yet.
+A02: create with generated/custom title, authenticated unverified owner, initial version 1, repeat/concurrent creation key behavior. A03/A06: owner isolation, guests, unavailable IDs and no private account leakage. A10/A11: formatting boundaries/unsafe links, length/tree/body limits, unknown ownership input, travel-date validation, session/CSRF failures, cursor validation, deterministic tie ordering and empty/final pages. PostgreSQL verifies JSON storage and unique owner-scoped creation keys. Endpoint and story tests now run; PostgreSQL tests cover JSON storage, owner-scoped keys and concurrent identical/conflicting creation. Browser checks enter with the author/publishing flows.
 
 ### Sources consulted
 
@@ -213,10 +213,24 @@ Launch audience remains a later-stage decision.
 
 ### Storage implementation boundary
 
-Step 3 adds storage and owner policies only. User deletion is restricted while adventure rows exist, including trash, so a future account-deletion workflow must explicitly handle adventure retention and media cleanup. Creation-key uniqueness is stored per owner; replay handling and title generation belong to the next endpoint slice.
+Step 3 adds storage and owner policies only. User deletion is restricted while adventure rows exist, including trash, so a future account-deletion workflow must explicitly handle adventure retention and media cleanup. Creation-key uniqueness is stored per owner; step 4 now adds replay handling and title generation.
 
-Private draft create/list/view is Ready for implementation: data, permissions, substantive OpenAPI schemas, failure examples and acceptance coverage are designed. The full creation/publishing stage remains Draft for later contract extensions. Browser coverage enters with actual autosave/publishing flows. Contract lint passed through Redocly directly and npm; one initial Windows Node shutdown assertion was not reproduced on later runs. Storage and owner policies are implemented; eight SQLite behavior tests and two PostgreSQL transaction tests pass. The additive migration is applied to the WSL PostgreSQL database and verified through Boost. No product endpoints exist yet. Remaining PR file paths are forecasts. Work is paused after step 3 on rebuild/sdd-foundation, with planning baseline f504a16 and storage commit c681a5f committed.
+Private draft create/list/view is Ready for implementation: data, permissions, substantive OpenAPI schemas, failure examples and acceptance coverage are designed. The full creation/publishing stage remains Draft for later contract extensions. Browser coverage enters with actual autosave/publishing flows. Contract lint passed through Redocly directly and npm; one initial Windows Node shutdown assertion was not reproduced on later runs. Storage and owner policies are implemented; eight SQLite behavior tests and two PostgreSQL transaction tests pass. The additive migration is applied to the WSL PostgreSQL database and verified through Boost. The three private API operations are verified locally on codex/private-adventure-api. Storage commit c681a5f and the planning baseline are merged into main. Remaining screen/lifecycle paths are forecasts; next is step 5.
 
 ## Readable planner
 
 See `docs/adventure-planner.html` for stage scope, journey, permissions, decisions and expected PR file paths. This specification remains the behavioral planning source; the planner presents it in readable form.
+
+## Private API implementation decisions
+
+Step 4 registers session-backed JSON routes and wires the existing policies through per-operation can middleware: viewAny for listing, create for creation and view for detail. Form Requests validate input; controllers coordinate operations and responses. Creation locks the owner row inside a transaction, then checks the owner-scoped key including trash. This serializes creation per author; it does not serialize unrelated authors. Canonical fingerprints sort object keys recursively while preserving array order and story text whitespace. Missing/blank title shares a null marker; the default UTC title is generated only for a new row. UUIDs normalize to lowercase. Only request body fields contribute to creation, never query parameters.
+
+Transport validation precedes session processing: require Accept: application/json (406), JSON Content-Type for creation (415), a valid JSON object (400), and at most 524288 raw UTF-8 body bytes (413). No compressed request bodies are accepted (415). These responses contain only message. Unknown payload fields return 422. Raw story text bypasses global trim/null conversion; title/location normalize explicitly. Default Laravel origin verification accepts the same-origin fetch header, with CSRF token fallback otherwise; HTTP browsers normally use the token fallback.
+
+Cursor validation accepts only canonical Laravel encoding with updated_at, positive integer id and boolean direction. Timestamps must be real database-format dates and fit the database range. A valid empty cursor page is allowed; malformed cursors return 422 rather than restarting the list. Draft list and detail exclude published and trashed records. page_path is a future page target; this slice does not register HTML adventure pages.
+
+## Step 4 verification
+
+Full SQLite suite: 120 passed, 387 assertions, four PostgreSQL-only skips. The separate isolated PostgreSQL database passes 51 API/storage tests (190 assertions) and two parallel creation tests (5 assertions) (one draft plus replay, or one draft plus conflict). CSRF tests explicitly disable the framework test bypass and verify token rejection/acceptance. The default Laravel same-origin path remains configured. Boost application-info and package documentation tools work through the normal Codex connection again. PostgreSQL 17 CI is configured, but remote CI has not run for this uncommitted change. No browser screens, editing/autosave endpoint, publishing or media behavior is claimed.
+
+Pint, Larastan, Wayfinder generation, frontend formatting/lint, TypeScript, OpenAPI validation and the Windows production asset build pass. Planner visuals have not been re-inspected in a browser during this backend slice.

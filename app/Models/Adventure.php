@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Database\Factories\AdventureFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -10,6 +11,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property CarbonImmutable|null $travel_start_date
+ * @property CarbonImmutable|null $travel_end_date
+ * @property CarbonImmutable|null $published_at
+ * @property CarbonImmutable|null $first_published_at
+ */
 #[Fillable(['title', 'story', 'story_format_version', 'location', 'travel_start_date', 'travel_end_date'])]
 #[Hidden(['user_id', 'creation_key', 'request_fingerprint'])]
 class Adventure extends Model
