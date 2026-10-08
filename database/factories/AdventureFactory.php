@@ -14,11 +14,14 @@ class AdventureFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'title' => fake()->sentence(4),
+            'title' => fake()
+                ->sentence(4),
             'story' => ['type' => 'doc', 'content' => [['type' => 'paragraph']]],
             'story_format_version' => 1,
-            'creation_key' => fake()->uuid(),
-            'request_fingerprint' => hash('sha256', fake()->uuid()),
+            'creation_key' => fake()
+                ->uuid(),
+            'request_fingerprint' => hash('sha256', fake()
+                ->uuid()),
         ];
     }
 }

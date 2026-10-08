@@ -13,18 +13,27 @@ return new class extends Migration
     {
         Schema::create('adventures', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->restrictOnDelete();
+            $table->foreignId('user_id')
+                ->constrained()
+                ->restrictOnDelete();
             $table->string('title', 160);
             $table->jsonb('story');
-            $table->unsignedSmallInteger('story_format_version')->default(1);
-            $table->string('location', 200)->nullable();
-            $table->date('travel_start_date')->nullable();
-            $table->date('travel_end_date')->nullable();
-            $table->unsignedInteger('version')->default(1);
+            $table->unsignedSmallInteger('story_format_version')
+                ->default(1);
+            $table->string('location', 200)
+                ->nullable();
+            $table->date('travel_start_date')
+                ->nullable();
+            $table->date('travel_end_date')
+                ->nullable();
+            $table->unsignedInteger('version')
+                ->default(1);
             $table->uuid('creation_key');
             $table->char('request_fingerprint', 64);
-            $table->timestampTz('published_at')->nullable();
-            $table->timestampTz('first_published_at')->nullable();
+            $table->timestampTz('published_at')
+                ->nullable();
+            $table->timestampTz('first_published_at')
+                ->nullable();
             $table->timestampsTz();
             $table->softDeletesTz();
             $table->unique(['user_id', 'creation_key']);

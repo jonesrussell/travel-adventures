@@ -9,6 +9,8 @@ class AdventureSeeder extends Seeder
 {
     public function run(): void
     {
-        Adventure::factory()->count(3)->create();
+        Adventure::factory()
+            ->count(3)
+            ->create();
     }
 }

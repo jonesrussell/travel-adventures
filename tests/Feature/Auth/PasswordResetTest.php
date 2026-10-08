@@ -31,7 +31,8 @@ class PasswordResetTest extends TestCase
     {
         Notification::fake();
 
-        $user = User::factory()->create();
+        $user = User::factory()
+            ->create();
 
         $this->post(route('password.email'), ['email' => $user->email]);
 
@@ -42,7 +43,8 @@ class PasswordResetTest extends TestCase
     {
         Notification::fake();
 
-        $user = User::factory()->create();
+        $user = User::factory()
+            ->create();
 
         $this->post(route('password.email'), ['email' => $user->email]);
 
@@ -59,7 +61,8 @@ class PasswordResetTest extends TestCase
     {
         Notification::fake();
 
-        $user = User::factory()->create();
+        $user = User::factory()
+            ->create();
 
         $this->post(route('password.email'), ['email' => $user->email]);
 
@@ -81,7 +84,8 @@ class PasswordResetTest extends TestCase
 
     public function test_password_cannot_be_reset_with_invalid_token(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()
+            ->create();
 
         $response = $this->post(route('password.update'), [
             'token' => 'invalid-token',
