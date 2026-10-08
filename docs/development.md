@@ -68,6 +68,12 @@ python scripts/verify-boost.py --php "$env:USERPROFILE/.config/herd/bin/php85/ph
 
 It verifies MCP initialization, application-info and URL resolution. A read-only Boost database query separately verifies database connectivity; listing connections alone does not prove reachability. Do not commit local MCP configuration.
 
+## VS Code
+
+The official Laravel extension is `laravel.vscode-laravel`. It is installed locally at version 2.0.1. This checkout's ignored `.vscode/settings.json` explicitly selects Herd and the verified isolated PHP executable using `Laravel.phpEnvironment` and the argv-array `Laravel.phpCommand`. Open this checkout in VS Code to activate Laravel LSP. If the editor was already open, reload its window to apply the runtime settings.
+
+For another checkout, install the official extension if absent and resolve its actual Herd PHP path; do not copy this user's absolute path. Preserve existing editor settings. Workspace settings and recommendations are currently ignored by repository policy. Extension installation and PHP selection have been checked; live editor completion/diagnostic behavior has not been verified in this setup pass.
+
 ## Retained Sail fallback
 
 The project-owned PHP 8.5/Node 24 Docker image and Compose application service remain available. The application container is stopped; PostgreSQL remains running. Before deliberately using Sail, temporarily configure DB_HOST=pgsql, DB_PORT=5432 and APP_URL=http://localhost:48190 in the ignored local environment. Restore Herd values before returning to Herd. Avoid simultaneous runtime use with conflicting environment settings.

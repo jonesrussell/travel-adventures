@@ -1,0 +1,1733 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
+        <title>Travel Adventures · Adventure planner</title>
+        <style>
+            :root {
+                font-family:
+                    Inter,
+                    Segoe UI,
+                    system-ui,
+                    sans-serif;
+                color: #243b36;
+                background: #eef2ee;
+                font-synthesis: none;
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+            }
+            .shell {
+                max-width: 1440px;
+                margin: auto;
+                padding: 32px 42px;
+            }
+            .top {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-bottom: 24px;
+                border-bottom: 1px solid #d3ddd4;
+            }
+            .brand {
+                font-weight: 750;
+                font-size: 20px;
+            }
+            .brand span {
+                color: #5a7664;
+                font-weight: 400;
+            }
+            .stamp {
+                font-size: 12px;
+                color: #60746b;
+            }
+            .intro {
+                display: flex;
+                justify-content: space-between;
+                gap: 30px;
+                align-items: center;
+                margin: 30px 0 24px;
+            }
+            .eyebrow {
+                font-size: 11px;
+                letter-spacing: 1.8px;
+                text-transform: uppercase;
+                font-weight: 750;
+                color: #657e6e;
+            }
+            h1 {
+                font-size: clamp(32px, 4vw, 48px);
+                letter-spacing: -1.8px;
+                margin: 8px 0 10px;
+                line-height: 1.1;
+            }
+            p {
+                line-height: 1.5;
+                margin: 0;
+                color: #60746b;
+            }
+            .pill {
+                padding: 9px 13px;
+                border-radius: 30px;
+                background: #fae7ba;
+                color: #705016;
+                font-size: 12px;
+                font-weight: 700;
+                white-space: nowrap;
+            }
+            .overview {
+                display: grid;
+                grid-template-columns: 1.5fr 1fr 1fr;
+                gap: 16px;
+            }
+            .card {
+                background: #fff;
+                border: 1px solid #dae3db;
+                border-radius: 16px;
+                padding: 23px;
+            }
+            .focus {
+                background: #163f34;
+                color: #fff;
+                border: 0;
+            }
+            .focus .eyebrow {
+                color: #a9c5b3;
+            }
+            .focus h2 {
+                font-size: 27px;
+                letter-spacing: -0.5px;
+                margin: 12px 0;
+            }
+            .focus p {
+                color: #c2d5c9;
+                font-size: 14px;
+            }
+            .nextline {
+                border-top: 1px solid #3b5e50;
+                margin-top: 20px;
+                padding-top: 16px;
+                font-size: 13px;
+                color: #c2d5c9;
+            }
+            .nextline strong {
+                color: white;
+                display: block;
+                margin-top: 5px;
+            }
+            .card h3 {
+                font-size: 18px;
+                margin: 12px 0;
+            }
+            .fact {
+                display: flex;
+                gap: 10px;
+                align-items: baseline;
+                margin: 12px 0;
+                font-size: 14px;
+            }
+            .dot {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: #51866b;
+                flex-shrink: 0;
+            }
+            .muted .dot {
+                background: #b9c5bc;
+            }
+            .small {
+                font-size: 12px;
+                color: #6c7f74;
+            }
+            .sectionhead {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                margin: 30px 0 14px;
+            }
+            .sectionhead h2 {
+                font-size: 20px;
+                margin: 0;
+                letter-spacing: -0.4px;
+            }
+            .sectionhead span {
+                font-size: 12px;
+                color: #6c7f74;
+            }
+            .path {
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                gap: 8px;
+            }
+            .step {
+                border-top: 4px solid #cdd8cf;
+                background: #f8faf7;
+                border-radius: 5px 5px 12px 12px;
+                padding: 16px 13px;
+                min-height: 138px;
+            }
+            .step.current {
+                border-color: #b68a3b;
+                background: #fcf3df;
+            }
+            .step .num {
+                font-size: 11px;
+                color: #738478;
+                font-weight: 700;
+            }
+            .step h3 {
+                font-size: 15px;
+                margin: 12px 0 9px;
+                line-height: 1.25;
+            }
+            .step p {
+                font-size: 11px;
+            }
+            .step.target {
+                border-color: #5b8b6d;
+                background: #e6eee4;
+            }
+            .bottom {
+                display: grid;
+                grid-template-columns: 1.2fr 1fr;
+                gap: 16px;
+                margin-top: 22px;
+            }
+            .gate {
+                display: grid;
+                grid-template-columns: 28px 1fr;
+                gap: 10px;
+                padding: 12px 0;
+                border-bottom: 1px solid #edf1ed;
+            }
+            .gate:last-child {
+                border: 0;
+            }
+            .gate .index {
+                font-size: 11px;
+                color: #88978b;
+                padding-top: 3px;
+            }
+            .gate strong {
+                display: block;
+                font-size: 14px;
+                margin-bottom: 4px;
+            }
+            .gate p {
+                font-size: 12px;
+            }
+            .decision {
+                display: flex;
+                justify-content: space-between;
+                gap: 14px;
+                padding: 13px 0;
+                border-bottom: 1px solid #edf1ed;
+                font-size: 13px;
+            }
+            .decision:last-child {
+                border: 0;
+            }
+            .decision span {
+                color: #728476;
+                font-size: 12px;
+                text-align: right;
+            }
+            .launch {
+                margin-top: 20px;
+                padding: 17px 21px;
+                border: 1px dashed #bbcbbd;
+                border-radius: 12px;
+                display: flex;
+                gap: 20px;
+                align-items: center;
+            }
+            .launch strong {
+                font-size: 13px;
+                white-space: nowrap;
+            }
+            .launch p {
+                font-size: 12px;
+            }
+            footer {
+                display: flex;
+                justify-content: space-between;
+                gap: 20px;
+                padding-top: 20px;
+                font-size: 11px;
+                color: #78897d;
+            }
+            a {
+                color: #526e5c;
+            }
+            a:focus-visible {
+                outline: 3px solid #b68a3b;
+            }
+            @media (min-width: 1600px) {
+                .shell {
+                    padding-top: 45px;
+                }
+            }
+            @media (max-width: 1050px) {
+                .shell {
+                    padding: 24px;
+                }
+                .overview {
+                    grid-template-columns: 1.3fr 1fr;
+                }
+                .overview > .card:last-child {
+                    grid-column: 1/-1;
+                }
+                .path {
+                    grid-template-columns: repeat(4, 1fr);
+                }
+                .step {
+                    min-height: 115px;
+                }
+            }
+            @media (max-width: 650px) {
+                .shell {
+                    padding: 20px 16px;
+                }
+                .top,
+                .intro {
+                    align-items: flex-start;
+                }
+                .top {
+                    gap: 12px;
+                }
+                .stamp {
+                    text-align: right;
+                }
+                .brand {
+                    font-size: 16px;
+                }
+                .intro {
+                    flex-direction: column;
+                    gap: 14px;
+                }
+                h1 {
+                    letter-spacing: -1px;
+                }
+                .overview,
+                .bottom {
+                    grid-template-columns: 1fr;
+                }
+                .overview > .card:last-child {
+                    grid-column: auto;
+                }
+                .path {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+                .sectionhead {
+                    gap: 12px;
+                }
+                .sectionhead span {
+                    text-align: right;
+                }
+                .launch,
+                footer {
+                    align-items: flex-start;
+                    flex-direction: column;
+                    gap: 8px;
+                }
+            }
+
+            /* Palette copied from the installed starter's resources/css/app.css. */
+            :root {
+                --background: hsl(0 0% 100%);
+                --foreground: hsl(0 0% 3.9%);
+                --card: hsl(0 0% 100%);
+                --card-foreground: hsl(0 0% 3.9%);
+                --popover: hsl(0 0% 100%);
+                --popover-foreground: hsl(0 0% 3.9%);
+                --primary: hsl(0 0% 9%);
+                --primary-foreground: hsl(0 0% 98%);
+                --secondary: hsl(0 0% 92.1%);
+                --secondary-foreground: hsl(0 0% 9%);
+                --muted: hsl(0 0% 96.1%);
+                --muted-foreground: hsl(0 0% 45.1%);
+                --accent: hsl(0 0% 96.1%);
+                --accent-foreground: hsl(0 0% 9%);
+                --destructive: hsl(0 84.2% 60.2%);
+                --destructive-foreground: hsl(0 0% 98%);
+                --border: hsl(0 0% 92.8%);
+                --input: hsl(0 0% 89.8%);
+                --ring: hsl(0 0% 3.9%);
+                --chart-1: hsl(12 76% 61%);
+                --chart-2: hsl(173 58% 39%);
+                --chart-3: hsl(197 37% 24%);
+                --chart-4: hsl(43 74% 66%);
+                --chart-5: hsl(27 87% 67%);
+                --radius: 0.5rem;
+                --sidebar-background: hsl(0 0% 98%);
+                --sidebar-foreground: hsl(240 5.3% 26.1%);
+                --sidebar-primary: hsl(0 0% 10%);
+                --sidebar-primary-foreground: hsl(0 0% 98%);
+                --sidebar-accent: hsl(0 0% 94%);
+                --sidebar-accent-foreground: hsl(0 0% 30%);
+                --sidebar-border: hsl(0 0% 91%);
+                --sidebar-ring: hsl(217.2 91.2% 59.8%);
+                --sidebar: hsl(0 0% 98%);
+                font-family:
+                    'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+                color: var(--foreground);
+                background: var(--background);
+                color-scheme: light dark;
+            }
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --background: hsl(0 0% 3.9%);
+                    --foreground: hsl(0 0% 98%);
+                    --card: hsl(0 0% 3.9%);
+                    --card-foreground: hsl(0 0% 98%);
+                    --popover: hsl(0 0% 3.9%);
+                    --popover-foreground: hsl(0 0% 98%);
+                    --primary: hsl(0 0% 98%);
+                    --primary-foreground: hsl(0 0% 9%);
+                    --secondary: hsl(0 0% 14.9%);
+                    --secondary-foreground: hsl(0 0% 98%);
+                    --muted: hsl(0 0% 16.08%);
+                    --muted-foreground: hsl(0 0% 63.9%);
+                    --accent: hsl(0 0% 14.9%);
+                    --accent-foreground: hsl(0 0% 98%);
+                    --destructive: hsl(0 84% 60%);
+                    --destructive-foreground: hsl(0 0% 98%);
+                    --border: hsl(0 0% 14.9%);
+                    --input: hsl(0 0% 14.9%);
+                    --ring: hsl(0 0% 83.1%);
+                    --chart-1: hsl(220 70% 50%);
+                    --chart-2: hsl(160 60% 45%);
+                    --chart-3: hsl(30 80% 55%);
+                    --chart-4: hsl(280 65% 60%);
+                    --chart-5: hsl(340 75% 55%);
+                    --sidebar-background: hsl(0 0% 7%);
+                    --sidebar-foreground: hsl(0 0% 95.9%);
+                    --sidebar-primary: hsl(360, 100%, 100%);
+                    --sidebar-primary-foreground: hsl(0 0% 100%);
+                    --sidebar-accent: hsl(0 0% 15.9%);
+                    --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+                    --sidebar-border: hsl(0 0% 15.9%);
+                    --sidebar-ring: hsl(217.2 91.2% 59.8%);
+                    --sidebar: hsl(240 5.9% 10%);
+                }
+            }
+            .top {
+                border-color: var(--border);
+            }
+            .brand span,
+            .stamp,
+            .eyebrow,
+            p,
+            .small,
+            .sectionhead span,
+            .step .num,
+            .decision span,
+            footer {
+                color: var(--muted-foreground);
+            }
+            .card {
+                background: var(--card);
+                border-color: var(--border);
+                border-radius: var(--radius);
+            }
+            .focus {
+                background: var(--primary);
+                color: var(--primary-foreground);
+            }
+            .focus .eyebrow,
+            .focus p,
+            .nextline {
+                color: var(--primary-foreground);
+            }
+            .focus .eyebrow,
+            .focus p {
+                opacity: 0.8;
+            }
+            .nextline {
+                border-color: color-mix(
+                    in srgb,
+                    var(--primary-foreground) 25%,
+                    transparent
+                );
+            }
+            .nextline strong {
+                color: var(--primary-foreground);
+            }
+            .pill {
+                background: var(--secondary);
+                color: var(--secondary-foreground);
+            }
+            .dot {
+                background: var(--primary);
+            }
+            .muted .dot {
+                background: var(--muted-foreground);
+            }
+            .step {
+                background: var(--muted);
+                border-color: var(--border);
+                border-radius: var(--radius);
+            }
+            .step.current {
+                background: var(--secondary);
+                border-color: var(--primary);
+            }
+            .step.target {
+                background: var(--muted);
+                border-color: var(--muted-foreground);
+            }
+            .gate,
+            .decision {
+                border-color: var(--border);
+            }
+            .gate .index {
+                color: var(--muted-foreground);
+            }
+            .launch {
+                border-color: var(--input);
+                border-radius: var(--radius);
+            }
+            a {
+                color: var(--foreground);
+            }
+            a:focus-visible {
+                outline-color: var(--ring);
+            }
+
+            .stage-intro {
+                padding: 30px 0;
+            }
+            .stage-intro h1 {
+                max-width: 950px;
+            }
+            .lede {
+                max-width: 780px;
+            }
+            .banner {
+                background: var(--muted);
+                border: 1px solid var(--border);
+                padding: 18px 22px;
+                border-radius: var(--radius);
+                margin: 18px 0;
+            }
+            .columns {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 18px;
+            }
+            .columns .card h2,
+            .section h2 {
+                font-size: 22px;
+                margin: 10px 0 18px;
+            }
+            .section {
+                margin-top: 26px;
+            }
+            .journey {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin: 20px 0;
+            }
+            .journey span {
+                padding: 10px 14px;
+                background: var(--muted);
+                border: 1px solid var(--border);
+                border-radius: var(--radius);
+                font-size: 13px;
+            }
+            .list {
+                padding-left: 20px;
+                color: var(--muted-foreground);
+                line-height: 1.7;
+                font-size: 14px;
+            }
+            .table-wrap {
+                overflow: auto;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                text-align: left;
+            }
+            th {
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 0.8px;
+                color: var(--muted-foreground);
+            }
+            td,
+            th {
+                padding: 13px 12px;
+                border-bottom: 1px solid var(--border);
+                vertical-align: top;
+            }
+            td {
+                font-size: 13px;
+                line-height: 1.5;
+            }
+            td p {
+                font-size: 12px;
+                margin-top: 5px;
+            }
+            .tag {
+                font-size: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.7px;
+                background: var(--secondary);
+                padding: 4px 7px;
+                border-radius: 4px;
+                display: inline-block;
+                white-space: nowrap;
+            }
+            .file {
+                font-family: ui-monospace, monospace;
+                overflow-wrap: anywhere;
+            }
+            .pr {
+                margin-bottom: 18px;
+            }
+            .pr h3 {
+                margin: 8px 0;
+            }
+            .pr p {
+                font-size: 13px;
+                margin: 8px 0;
+            }
+            .pr table {
+                table-layout: fixed;
+            }
+            .pr th:first-child {
+                width: 46%;
+            }
+            .pr th:nth-child(2) {
+                width: 14%;
+            }
+            .links {
+                display: flex;
+                gap: 16px;
+                flex-wrap: wrap;
+                font-size: 12px;
+            }
+            .note {
+                font-size: 12px;
+                line-height: 1.5;
+                margin-top: 12px;
+            }
+            @media (max-width: 760px) {
+                .columns {
+                    grid-template-columns: 1fr;
+                }
+                .pr td,
+                .pr th {
+                    padding: 10px 6px;
+                }
+                .pr th:first-child {
+                    width: 44%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <main class="shell">
+            <header class="top">
+                <div class="brand">
+                    Travel Adventures <span>/ Stage planner</span>
+                </div>
+                <div class="stamp">
+                    October 7, 2026<br />Product decisions agreed · technical
+                    design pending
+                </div>
+            </header>
+            <section class="stage-intro">
+                <div class="eyebrow">Adventure creation + publishing</div>
+                <h1>A private story.<br />An intentional public release.</h1>
+                <p class="lede">
+                    Private create/list/view design is ready and its contract
+                    validates. Next: implement the first slice when authorized.
+                    No product implementation yet.
+                </p>
+            </section>
+            <div class="columns">
+                <article class="card focus">
+                    <div class="eyebrow">First slice</div>
+                    <h2>Create and reopen a private draft</h2>
+                    <p>
+                        An authenticated author can start immediately, even
+                        before verifying email. Blank titles get an editable
+                        date-based default. Private drafts autosave with visible
+                        feedback.
+                    </p>
+                </article>
+                <article class="card">
+                    <div class="eyebrow">Stage boundary</div>
+                    <h2>Text adventures, then media</h2>
+                    <p>
+                        Create, edit, preview, publish, unpublish, trash and
+                        restore; public feed and author profiles. Photos and
+                        reels remain required later MVP stages. Search, maps and
+                        social features are deferred.
+                    </p>
+                </article>
+            </div>
+            <div class="journey">
+                <span>Sign in</span><span>Draft + autosave</span
+                ><span>Finish story + location</span
+                ><span>Verify email + choose username</span><span>Preview</span
+                ><span>Publish publicly</span>
+            </div>
+            <section class="columns">
+                <article class="card">
+                    <h2>Content and writing</h2>
+                    <ul class="list">
+                        <li>
+                            Title: up to 160 characters. Default: Adventure
+                            &#183; October 7, 2026, using creation date;
+                            editable and not unique.
+                        </li>
+                        <li>
+                            Story: headings, bold, italics, lists and HTTP/HTTPS
+                            links; up to 20,000 visible-text characters.
+                        </li>
+                        <li>Location: plain text, up to 200 characters.</li>
+                        <li>
+                            Story and location can be unfinished in drafts; both
+                            required to publish.
+                        </li>
+                        <li>
+                            Optional travel start/end dates. Future dates
+                            allowed privately; all supplied dates must be today
+                            or earlier to publish.
+                        </li>
+                        <li>Media remains separate from story formatting.</li>
+                    </ul>
+                </article>
+                <article class="card">
+                    <h2>Publishing and recovery</h2>
+                    <ul class="list">
+                        <li>Private drafts or public adventures only.</li>
+                        <li>
+                            Publish requires verified email and a chosen
+                            username, plus valid content and a preview
+                            confirmation.
+                        </li>
+                        <li>
+                            Published edits appear immediately on explicit Save.
+                            Unpublish first for private editing.
+                        </li>
+                        <li>
+                            Republishing retains original publication date and
+                            feed placement.
+                        </li>
+                        <li>
+                            Owner-only trash lasts 30 days. Restore always
+                            returns a private draft.
+                        </li>
+                        <li>
+                            Early permanent deletion from Trash is allowed after
+                            an irreversible-deletion warning and confirmation.
+                        </li>
+                    </ul>
+                </article>
+            </section>
+            <section class="columns section">
+                <article class="card">
+                    <h2>Author and visitor experience</h2>
+                    <ul class="list">
+                        <li>
+                            My adventures replaces the dashboard: Drafts,
+                            Published, Trash; New adventure; most recently
+                            edited first.
+                        </li>
+                        <li>
+                            Public feed replaces the welcome page: newest
+                            original publication first, 12 at a time, Load more.
+                        </li>
+                        <li>
+                            Profile shows display name, username and published
+                            adventures only. Email stays private.
+                        </li>
+                        <li>
+                            Username selected before first publish, fixed
+                            afterward: 3–30 lowercase letters, numbers or
+                            underscores; admin/support reserved.
+                        </li>
+                        <li>
+                            Page links use stable ID plus title slug; old links
+                            redirect only after access checks.
+                        </li>
+                    </ul>
+                </article>
+                <article class="card">
+                    <h2>Ownership and acceptance</h2>
+                    <ul class="list">
+                        <li>
+                            A02: ownership assigned by server; create and reopen
+                            a draft.
+                        </li>
+                        <li>
+                            A03: other accounts and guests cannot inspect drafts
+                            or trash.
+                        </li>
+                        <li>
+                            A04: failed publishing validation never exposes
+                            content.
+                        </li>
+                        <li>
+                            A05: feed and profiles exclude private/trashed
+                            adventures.
+                        </li>
+                        <li>
+                            A06: only owner can edit, publish, restore or
+                            delete.
+                        </li>
+                        <li>
+                            A10: accessible controls and honest
+                            Saving/Saved/failure feedback.
+                        </li>
+                        <li>
+                            A11: JSON success and failure behavior matches the
+                            designed contract.
+                        </li>
+                    </ul>
+                </article>
+            </section>
+            <section class="card section">
+                <div class="eyebrow">Design-ready / private create + view</div>
+                <h2>Three operations. Zero implemented endpoints.</h2>
+                <ul class="list">
+                    <li>
+                        Create a private draft: server assigns ownership and an
+                        editable title; repeated creation requests do not
+                        duplicate it.
+                    </li>
+                    <li>
+                        List my drafts: twelve at a time, recently edited first;
+                        no other authors or trash.
+                    </li>
+                    <li>
+                        View my draft: owner-only content; unavailable IDs do
+                        not reveal existence.
+                    </li>
+                </ul>
+                <p>
+                    OpenAPI covers story formatting, input limits, examples,
+                    session/CSRF, errors and cursor pages. Update/autosave,
+                    publishing, trash and public reads extend the contract in
+                    later slices.
+                </p>
+                <p class="note">
+                    Redocly contract validation passed directly. This proves
+                    contract structure, not endpoint behavior. A Windows Node
+                    shutdown assertion occurred once through npm; endpoint and
+                    browser tests remain pending.
+                </p>
+                <a href="../contracts/openapi.yaml">Designed API contract</a>
+            </section>
+            <section class="card section">
+                <div class="eyebrow">Conversation record</div>
+                <h2>Agreed product decisions</h2>
+                <p>
+                    Previously presented product recommendations are accepted;
+                    technical proposals are superseded by the selected design
+                    below. Proposed technical details within a decision still
+                    require design; later launch choices remain open.
+                </p>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Decision</th>
+                                <th>Status</th>
+                                <th>Rule / remaining design detail</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <strong>Early permanent deletion</strong>
+                                </td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    the owner may permanently delete an
+                                    adventure from Trash before 30 days, after
+                                    an explicit irreversible-deletion warning
+                                    and confirmation. No restoration is possible
+                                    afterward. Future media cleanup must be
+                                    retry-safe.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Story links</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    allow ordinary http:// and https:// links;
+                                    reject unsafe link types. Validate links and
+                                    supported formatting server-side, including
+                                    requests that bypass the editor.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Publication confirmation</strong>
+                                </td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    show a preview and explicit Publish publicly
+                                    confirmation before publishing. Saving
+                                    drafts never publishes. Confirm the latest
+                                    saved content and enforce verification,
+                                    username and publication validation
+                                    server-side.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Search</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    defer title/location search until the core
+                                    publishing flow works. No search UI, query
+                                    contract or search infrastructure in this
+                                    stage.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Public home</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    the published adventure feed replaces the
+                                    starter welcome page at /. Header provides
+                                    sign-in and registration links. Signed-in
+                                    visitors have an entry to My adventures.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Author home</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    replace the starter dashboard with My
+                                    adventures, with Drafts, Published and Trash
+                                    views, a New adventure button and recently
+                                    edited items first. Unverified authors can
+                                    access their draft workspace. Trash remains
+                                    owner-only.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Public profile scope</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    display name, username and published
+                                    adventures only. Bio, avatar uploads and
+                                    social links are deferred. Never expose
+                                    email, drafts or trash.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Public feed</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    newest first by original publication date,
+                                    12 adventures per page, with a Load more
+                                    button rather than infinite scrolling.
+                                    Proposed: cursor pagination with numeric ID
+                                    tie-breaker; contract must define cursor and
+                                    end-of-results behavior.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Travel dates</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    optional start date and optional end date
+                                    for multi-day trips, separate from
+                                    publication timing. Proposed validation: an
+                                    end date requires a start date and cannot
+                                    precede it; date-only values without
+                                    timezones. Agreed: future travel dates are
+                                    allowed in private drafts; publishing
+                                    requires all supplied travel dates to be
+                                    today or earlier. The same restriction
+                                    applies to saved edits of published
+                                    adventures. Proposed: use the application
+                                    timezone for today.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Adventure links</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    readable title slug plus stable ID; old
+                                    slugs redirect to the current page only when
+                                    the viewer has access. Private/trashed
+                                    content must not leak through redirects.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Draft saving</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    autosave private drafts after a short pause,
+                                    show Saving/Saved feedback and retain a
+                                    manual Save button. Published edits use
+                                    explicit Save because saved changes appear
+                                    publicly immediately. Proposed: debounce
+                                    interval, failed-save retry behavior and
+                                    concurrent-edit protection must be specified
+                                    before implementation.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Feed placement</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    retain original publication date when
+                                    republishing; edits, unpublish and restore
+                                    do not reset it. Current public visibility
+                                    is tracked separately.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Content limits</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    title 160 characters, location 200
+                                    characters and story 20,000 visible-text
+                                    characters. Formatting markup does not count
+                                    toward story length.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Story formatting</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    headings, bold, italics, lists and ordinary
+                                    HTTP/HTTPS links; media stays separate.
+                                    Editor/storage choice and safe rendering are
+                                    open implementation design decisions.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Location</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    simple text field; maps and place lookup
+                                    deferred.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Draft title</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    a saved draft requires a title, with an
+                                    automatically generated editable default
+                                    when the author does not supply one.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Default title format</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    generate &quot;Adventure · October 7,
+                                    2026&quot; using the creation date when
+                                    title input is blank. Titles remain editable
+                                    and need not be unique. Proposed: use the
+                                    application timezone consistently;
+                                    per-author timezone settings are deferred.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Draft completeness</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    story and location may remain unfinished in
+                                    drafts; both are required before publishing.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Visibility</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    MVP supports private drafts and public
+                                    published adventures. Unlisted and
+                                    followers-only sharing are deferred.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Author verification</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    authenticated authors may create, view and
+                                    edit private drafts before email
+                                    verification. Publishing requires verified
+                                    email. The starter dashboard currently
+                                    requires verification, so the owner-draft
+                                    entry point must support unverified authors.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Published editing</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    saved edits take effect immediately on
+                                    published adventures. Authors can unpublish
+                                    first for private editing. No separate
+                                    revision workflow. Published saves must
+                                    continue to satisfy publication
+                                    requirements; incomplete changes are
+                                    rejected unless the author unpublishes
+                                    first.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Content deletion</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    deleting an adventure moves it to owner-only
+                                    trash for 30 days. The owner may restore it
+                                    before permanent deletion. Trashed
+                                    adventures are excluded from public and
+                                    normal owner lists. Permanent cleanup after
+                                    expiry must be retry-safe, including future
+                                    media. Agreed: restoration always returns
+                                    the adventure as a private draft, including
+                                    previously published adventures;
+                                    republishing requires an explicit publish
+                                    action.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Profile identity</strong></td>
+                                <td><span class="tag">Agreed</span></td>
+                                <td>
+                                    each author has a unique public username
+                                    alongside an editable display name. Public
+                                    profile links use the username; email
+                                    addresses remain private. Agreed: authors
+                                    choose their username before their first
+                                    publish; registration and private drafting
+                                    do not require it. Agreed: the public
+                                    username is fixed once chosen for the MVP;
+                                    display name remains editable. Agreed
+                                    format: 3–30 characters using lowercase
+                                    letters, numbers and underscores. Usernames
+                                    are unique; admin and support are reserved.
+                                    Any additional reserved names must be
+                                    specified before username implementation.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>Public launch audience</strong></td>
+                                <td><span class="tag">Open</span></td>
+                                <td>
+                                    Invited pilot is proposed; no launch
+                                    audience confirmed.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section class="card section">
+                <div class="eyebrow">
+                    Agreed technical direction / not implemented
+                </div>
+                <h2>Technical choices selected</h2>
+                <ul class="list">
+                    <li>
+                        Story: Tiptap Vue 3, structured JSON in PostgreSQL;
+                        server validation and explicit safe Vue rendering.
+                    </li>
+                    <li>
+                        Autosave: 1-second pause, one save in flight; integer
+                        version checks prevent overwriting another tab. Failed
+                        saves preserve local writing.
+                    </li>
+                    <li>
+                        Publication: separate current visibility from original
+                        publication date. Transactions and row locks; repeated
+                        requests do not reset dates.
+                    </li>
+                    <li>
+                        Trash: exact 30-day UTC deadline; hourly retry-safe
+                        cleanup. Restore and purge use row locks.
+                    </li>
+                    <li>
+                        Dates: UTC defines today and generated-title creation
+                        date; travel dates remain date-only.
+                    </li>
+                    <li>
+                        JSON: same-origin session and CSRF protection, versioned
+                        endpoints, explicit errors and cursor pagination.
+                    </li>
+                    <li>
+                        Usernames: trim/lowercase, database uniqueness and
+                        reserved-name list; existing users choose before
+                        publishing.
+                    </li>
+                    <li>
+                        Tests: Pest plus PostgreSQL integration. Playwright
+                        Chromium on PRs; Firefox/WebKit for staging.
+                    </li>
+                </ul>
+                <p class="note">
+                    Initial private create/view contract is designed and
+                    validated. Extend it before implementing later operations.
+                    Full decisions are recorded in the stage specification. No
+                    packages installed or product code generated.
+                </p>
+            </section>
+            <section class="section">
+                <div class="sectionhead">
+                    <h2>Expected pull request file list</h2>
+                    <span>Forecast, not generated scaffolding</span>
+                </div>
+                <article class="card pr">
+                    <div class="eyebrow">Proposed PR</div>
+                    <h3>01 / Design before code</h3>
+                    <p>
+                        Resolve the next slice and design its contract. These
+                        paths are proposals; only the draft spec and planner
+                        exist so far.
+                    </p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Expected repository path</th>
+                                    <th>Change</th>
+                                    <th>Purpose</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="file">
+                                        specs/003-adventures.md
+                                    </td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>
+                                        Refine lifecycle, fields, permissions
+                                        and acceptance decisions.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        specs/002-first-release.md
+                                    </td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>
+                                        Keep release-level requirements aligned.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">contracts/openapi.yaml</td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Design schemas, operations,
+                                        authentication and failures.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        docs/adventure-planner.html
+                                    </td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>
+                                        Present the agreed stage in readable
+                                        form.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">docs/mvp-tracker.html</td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>Reflect current stage and evidence.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+                <article class="card pr">
+                    <div class="eyebrow">Proposed PR</div>
+                    <h3>02 / Private create + view</h3>
+                    <p>
+                        First implementation slice after its design is Ready and
+                        implementation is authorized.
+                    </p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Expected repository path</th>
+                                    <th>Change</th>
+                                    <th>Purpose</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="file">
+                                        app/Models/Adventure.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Adventure persistence and owner
+                                        relationship.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">app/Models/User.php</td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>User-to-adventures relationship.</td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        app/Policies/AdventurePolicy.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>Owner access and mutation rules.</td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        app/Http/Requests/StoreAdventureRequest.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Draft creation validation and
+                                        authorization.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        app/Http/Controllers/AdventureController.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Inertia create, owner list and owner
+                                        detail.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        app/Http/Controllers/Api/V1/AdventureController.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Contracted JSON create and owner reads.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        app/Http/Resources/AdventureResource.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Explicit JSON fields without private
+                                        user data.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        app/Actions/Adventures/CreateAdventure.php
+                                    </td>
+                                    <td>
+                                        <span class="tag">Conditional</span>
+                                    </td>
+                                    <td>
+                                        Share creation between page and JSON
+                                        handlers if needed.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        database/migrations/&lt;timestamp&gt;_create_adventures_table.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Owner foreign key, content and
+                                        publication fields.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        database/factories/AdventureFactory.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Owner/draft states for behavior tests.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        database/seeders/AdventureSeeder.php
+                                    </td>
+                                    <td>
+                                        <span class="tag">Conditional</span>
+                                    </td>
+                                    <td>
+                                        Development sample adventures if useful.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">routes/web.php</td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>Named owner page routes.</td>
+                                </tr>
+                                <tr>
+                                    <td class="file">routes/api.php</td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>Versioned adventure JSON routes.</td>
+                                </tr>
+                                <tr>
+                                    <td class="file">bootstrap/app.php</td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>
+                                        Register API routes and appropriate
+                                        middleware.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        resources/js/pages/adventures/Create.vue
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>Draft form and validation feedback.</td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        resources/js/pages/adventures/Show.vue
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>Owner draft detail.</td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        resources/js/pages/Dashboard.vue
+                                    </td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>
+                                        Replace placeholders with owner
+                                        adventure list.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        tests/Feature/AdventureDraftTest.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Create/view behavior, validation and
+                                        isolation.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        tests/Feature/AdventureApiTest.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Contract behavior and authorization
+                                        failures.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+                <article class="card pr">
+                    <div class="eyebrow">Proposed PR</div>
+                    <h3>03 / Edit + publish</h3>
+                    <p>
+                        Add explicit lifecycle actions and browser coverage;
+                        retain media readiness as a later dependency.
+                    </p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Expected repository path</th>
+                                    <th>Change</th>
+                                    <th>Purpose</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="file">
+                                        app/Http/Requests/UpdateAdventureRequest.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>Owner editing validation.</td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        app/Http/Requests/PublishAdventureRequest.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>Publishing requirements.</td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        app/Http/Controllers/AdventurePublicationController.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Explicit publish/unpublish page actions.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        app/Http/Controllers/Api/V1/AdventurePublicationController.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Contracted JSON publication actions.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        app/Policies/AdventurePolicy.php
+                                    </td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>Publication authorization.</td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        app/Http/Controllers/AdventureController.php
+                                    </td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>Edit, update, preview and deletion.</td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        app/Http/Controllers/Api/V1/AdventureController.php
+                                    </td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>JSON update/deletion.</td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        resources/js/pages/adventures/Edit.vue
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Owner editing and lifecycle controls.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        resources/js/pages/adventures/Preview.vue
+                                    </td>
+                                    <td>
+                                        <span class="tag">Conditional</span>
+                                    </td>
+                                    <td>
+                                        Separate preview page only if existing
+                                        detail cannot serve it.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        tests/Feature/AdventurePublicationTest.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Publish rules, unpublish and ownership
+                                        failures.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        tests/Browser/adventure-publishing.spec.ts
+                                    </td>
+                                    <td>
+                                        <span class="tag">Conditional</span>
+                                    </td>
+                                    <td>
+                                        Publishing journey; location/tooling
+                                        chosen before implementation.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        routes/web.php + routes/api.php
+                                    </td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>
+                                        Explicit publication and owner mutation
+                                        routes.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">contracts/openapi.yaml</td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>
+                                        Align new operations before endpoint
+                                        implementation.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+                <article class="card pr">
+                    <div class="eyebrow">Proposed PR</div>
+                    <h3>04 / Public browsing</h3>
+                    <p>
+                        Published-only feed, detail and author profile after
+                        profile identity is decided.
+                    </p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Expected repository path</th>
+                                    <th>Change</th>
+                                    <th>Purpose</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="file">
+                                        app/Http/Controllers/AdventureFeedController.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>Published-only paginated feed.</td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        app/Http/Controllers/AuthorProfileController.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Public identity and published
+                                        adventures.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        resources/js/pages/adventures/Index.vue
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>Public feed and empty state.</td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        resources/js/pages/authors/Show.vue
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Public author profile without email.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        resources/js/pages/adventures/Show.vue
+                                    </td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>
+                                        Published visitor view and owner-only
+                                        controls.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        tests/Feature/PublicAdventuresTest.php
+                                    </td>
+                                    <td><span class="tag">Added</span></td>
+                                    <td>
+                                        Draft exclusion, profile privacy and
+                                        stable pagination.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">
+                                        routes/web.php + routes/api.php
+                                    </td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>
+                                        Public operations according to the
+                                        contract.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="file">contracts/openapi.yaml</td>
+                                    <td><span class="tag">Modified</span></td>
+                                    <td>
+                                        Public reads and pagination schemas.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+                <div class="banner">
+                    <strong>Reuse before adding</strong>
+                    <p class="note">
+                        Existing Fortify authentication, app layouts,
+                        InputError, UI form controls and Wayfinder. Generated
+                        resources/js/actions, routes and wayfinder plus
+                        public/build stay ignored. Shared services, new base
+                        folders and media scaffolding are not assumed.
+                    </p>
+                </div>
+            </section>
+            <section class="card section">
+                <h2>Additional PR forecast from agreed decisions</h2>
+                <ul class="list">
+                    <li>
+                        StoryEditor.vue / StoryContent.vue: conditional reusable
+                        formatting and safe display components.
+                    </li>
+                    <li>
+                        useAdventureAutosave.ts: conditional draft save logic
+                        and associated browser tests.
+                    </li>
+                    <li>
+                        &lt;timestamp&gt;_add_username_to_users_table.php:
+                        public identity, unique indexing and existing-user
+                        handling; update profile settings and publish
+                        prerequisites.
+                    </li>
+                    <li>
+                        AdventureTrashController.php and API counterpart,
+                        Trash.vue: owner trash, restore and confirmed early
+                        permanent deletion.
+                    </li>
+                    <li>
+                        PurgeExpiredAdventures.php + routes/console.php:
+                        retry-safe expiry cleanup; tests cover restore,
+                        deadline, ownership and repeated cleanup.
+                    </li>
+                    <li>
+                        Initial adventure migration/forms/resources/contract
+                        include travel dates, trash state and separate
+                        visibility/original publication fields.
+                    </li>
+                </ul>
+                <p class="note">
+                    All paths remain forecasts. Additional changes:
+                    package.json/package-lock.json for Tiptap and Playwright;
+                    app/Rules/StoryDocument.php for bounded JSON validation;
+                    playwright.config.ts and PostgreSQL/browser CI checks. Reuse
+                    app layouts, Fortify, form components and Wayfinder.
+                    Generated route types and compiled assets remain ignored. No
+                    product files have been generated.
+                </p>
+            </section>
+            <footer>
+                <div class="links">
+                    <a href="mvp-tracker.html">MVP outlook</a
+                    ><a href="roadmap.md">Roadmap</a
+                    ><a href="../specs/003-adventures.md">Stage specification</a
+                    ><a href="../specs/002-first-release.md"
+                        >Release criteria</a
+                    >
+                </div>
+                <span>Planning only. Visual review unverified.</span>
+            </footer>
+        </main>
+    </body>
+</html>

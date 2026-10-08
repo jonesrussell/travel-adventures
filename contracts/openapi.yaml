@@ -1,0 +1,725 @@
+openapi: 3.1.0
+info:
+    title: Travel Adventures API
+    version: 0.1.0
+    description:
+        'DESIGN CONTRACT ONLY. These operations are not implemented. First
+        slice: private draft create/list/detail; autosave update, publication, trash and
+        public reads are future contract extensions. Same-origin Fortify session auth
+        with default web CSRF middleware. No bearer tokens or public login API. Authentication
+        occurs through existing account pages. No live deployment implied.'
+    license:
+        name: MIT
+        identifier: MIT
+servers:
+    - url: http://travel-adventures.test
+      description: Local Herd design target, not production
+tags:
+    - name: Owner drafts
+      description: Private owner-only first-slice operations.
+security:
+    - SessionCookie: []
+paths:
+    /api/v1/adventures:
+        get:
+            operationId: listMyAdventureDrafts
+            tags:
+                - Owner drafts
+            summary: List my private drafts
+            description:
+                'First-slice scope: draft-only owner list, excluding published/trashed
+                rows. Fixed page size 12, updated_at DESC then id DESC. Opaque validated cursor
+                uses Laravel cursor encoding; reject invalid/noncanonical cursor with 422.
+                Live pagination is deterministic but not a frozen snapshot when editing changes
+                updated_at; UI deduplicates by ID. No title/story filter. Later slices expand
+                owner status views explicitly.'
+            parameters:
+                - &id001
+                  name: Accept
+                  in: header
+                  required: true
+                  description: JSON operations require this header; no HTML redirects.
+                  schema:
+                      type: string
+                      enum:
+                          - application/json
+                - name: cursor
+                  in: query
+                  required: false
+                  schema:
+                      type: string
+                      minLength: 1
+                      maxLength: 2048
+                  description: Opaque cursor from meta. Omit for first page.
+            responses:
+                '401':
+                    $ref: '#/components/responses/Unauthenticated'
+                '200':
+                    description: Owner draft page; empty and final pages have null next cursor/link.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AdventureCollection'
+                            example:
+                                data:
+                                    - id: 123
+                                      title: Adventure · October 7, 2026
+                                      location: null
+                                      travel_start_date: null
+                                      travel_end_date: null
+                                      status: draft
+                                      version: 1
+                                      published_at: null
+                                      first_published_at: null
+                                      created_at: '2026-10-07T16:00:00Z'
+                                      updated_at: '2026-10-07T16:00:00Z'
+                                      page_path: /adventures/123/adventure-october-7-2026
+                                links:
+                                    prev: null
+                                    next: null
+                                meta:
+                                    per_page: 12
+                                    next_cursor: null
+                                    prev_cursor: null
+                '422':
+                    $ref: '#/components/responses/Validation'
+        post:
+            operationId: createAdventureDraft
+            tags:
+                - Owner drafts
+            summary: Create a private adventure draft
+            description:
+                Authenticated authors may create before email verification or username
+                selection. Ownership derives only from session. Persist creation key and normalized
+                request fingerprint atomically under unique(owner, key). First successful
+                creation returns 201, repeated identical request returns 200 with current
+                draft. Repeat with differing normalized input returns 409. Trim/null normalization
+                uses blank-title marker for fingerprint; generated date/title are not recalculated
+                on retry. Keys retained for the adventure lifetime; retries after permanent
+                purge are not guaranteed idempotent. Creation never publishes.
+            parameters:
+                - *id001
+                - name: X-XSRF-TOKEN
+                  in: header
+                  required: false
+                  description:
+                      URL-decoded XSRF-TOKEN cookie value. Client sends this or X-CSRF-TOKEN
+                      from a server-rendered page. Tokens remain required for HTTP Herd; default
+                      Laravel HTTPS origin validation may accept same-origin requests without
+                      token fallback. No origin-only customization.
+                  schema:
+                      type: string
+                - name: X-CSRF-TOKEN
+                  in: header
+                  required: false
+                  description: Alternative session CSRF token from page meta.
+                  schema:
+                      type: string
+            responses:
+                '401':
+                    $ref: '#/components/responses/Unauthenticated'
+                '201':
+                    description: New private draft.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AdventureResponse'
+                            example:
+                                data: &id002
+                                    id: 123
+                                    title: Adventure · October 7, 2026
+                                    location: null
+                                    travel_start_date: null
+                                    travel_end_date: null
+                                    status: draft
+                                    version: 1
+                                    published_at: null
+                                    first_published_at: null
+                                    created_at: '2026-10-07T16:00:00Z'
+                                    updated_at: '2026-10-07T16:00:00Z'
+                                    page_path: /adventures/123/adventure-october-7-2026
+                                    story_format_version: 1
+                                    story:
+                                        type: doc
+                                        content:
+                                            - type: paragraph
+                '200':
+                    description: Idempotent replay; returns the current available draft.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AdventureResponse'
+                            example:
+                                data: *id002
+                '409':
+                    $ref: '#/components/responses/CreationConflict'
+                '419':
+                    $ref: '#/components/responses/CsrfMismatch'
+                '422':
+                    $ref: '#/components/responses/Validation'
+                '413':
+                    $ref: '#/components/responses/PayloadTooLarge'
+            requestBody:
+                required: true
+                description: JSON body <= 524288 bytes; story has separate 262144-byte limit.
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateAdventure'
+                        examples:
+                            minimal:
+                                summary: Start with generated title
+                                value:
+                                    creation_key: cb1f1212-95b6-4e1e-9191-3a70097504e1
+                            formatted:
+                                summary: Start an unfinished formatted story
+                                value:
+                                    creation_key: 7ed0b481-0719-4d42-9f6c-052ca6abf2db
+                                    title: Banff weekend
+                                    location: Banff, Alberta, Canada
+                                    story_format_version: 1
+                                    story:
+                                        type: doc
+                                        content:
+                                            - type: paragraph
+                                              content:
+                                                  - type: text
+                                                    text: A mountain weekend.
+                                                    marks:
+                                                        - type: bold
+    /api/v1/adventures/{adventure}:
+        parameters:
+            - name: adventure
+              in: path
+              required: true
+              schema:
+                  type: integer
+                  minimum: 1
+              description: Stable numeric adventure ID.
+        get:
+            operationId: getMyAdventureDraft
+            tags:
+                - Owner drafts
+            summary: View my private draft
+            description:
+                Fetch owner draft by numeric ID. Other accounts, guests and trash
+                have no access; guests return 401, authenticated unavailable resources return
+                404. No canonical slug redirects in JSON. Page URLs enforce access before
+                redirecting stale slugs.
+            parameters:
+                - *id001
+            responses:
+                '401':
+                    $ref: '#/components/responses/Unauthenticated'
+                '200':
+                    description: Owner draft detail.
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AdventureResponse'
+                            example:
+                                data: *id002
+                '404':
+                    $ref: '#/components/responses/NotFound'
+components:
+    securitySchemes:
+        SessionCookie:
+            type: apiKey
+            in: cookie
+            name: travel-adventures-session
+            description:
+                Default local cookie name derived from APP_NAME. Environment overrides
+                must keep the published contract accurate. HttpOnly session established via
+                Fortify; clients send same-origin credentials. Never put real cookie/token
+                values in examples.
+    schemas:
+        BoldMark:
+            type: object
+            additionalProperties: false
+            properties:
+                type:
+                    type: string
+                    const: bold
+            required:
+                - type
+        ItalicMark:
+            type: object
+            additionalProperties: false
+            properties:
+                type:
+                    type: string
+                    const: italic
+            required:
+                - type
+        LinkMark:
+            type: object
+            additionalProperties: false
+            properties:
+                type:
+                    type: string
+                    const: link
+                attrs:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                        href:
+                            type: string
+                            format: uri
+                            pattern: ^https?://
+                            maxLength: 2048
+                    required:
+                        - href
+            required:
+                - type
+                - attrs
+        TextNode:
+            type: object
+            additionalProperties: false
+            properties:
+                type:
+                    type: string
+                    const: text
+                text:
+                    type: string
+                    minLength: 1
+                    maxLength: 20000
+                marks:
+                    type: array
+                    items:
+                        oneOf:
+                            - $ref: '#/components/schemas/BoldMark'
+                            - $ref: '#/components/schemas/ItalicMark'
+                            - $ref: '#/components/schemas/LinkMark'
+                    minItems: 0
+                    maxItems: 3
+            required:
+                - type
+                - text
+        HardBreakNode:
+            type: object
+            additionalProperties: false
+            properties:
+                type:
+                    type: string
+                    const: hardBreak
+            required:
+                - type
+        ParagraphNode:
+            type: object
+            additionalProperties: false
+            properties:
+                type:
+                    type: string
+                    const: paragraph
+                content:
+                    type: array
+                    items: &id003
+                        oneOf:
+                            - $ref: '#/components/schemas/TextNode'
+                            - $ref: '#/components/schemas/HardBreakNode'
+                    minItems: 0
+                    maxItems: 5000
+            required:
+                - type
+        HeadingNode:
+            type: object
+            additionalProperties: false
+            properties:
+                type:
+                    type: string
+                    const: heading
+                attrs:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                        level:
+                            type: integer
+                            enum:
+                                - 2
+                                - 3
+                    required:
+                        - level
+                content:
+                    type: array
+                    items: *id003
+                    minItems: 0
+                    maxItems: 5000
+            required:
+                - type
+                - attrs
+        ListItemNode:
+            type: object
+            additionalProperties: false
+            properties:
+                type:
+                    type: string
+                    const: listItem
+                content:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/BlockNode'
+                    minItems: 1
+                    maxItems: 5000
+            required:
+                - type
+                - content
+            description:
+                First child must be a paragraph; later children may be paragraphs
+                or nested lists, not headings. Enforced by server semantic validation.
+        BulletListNode:
+            type: object
+            additionalProperties: false
+            properties:
+                type:
+                    type: string
+                    const: bulletList
+                content:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ListItemNode'
+                    minItems: 1
+                    maxItems: 5000
+            required:
+                - type
+                - content
+        OrderedListNode:
+            type: object
+            additionalProperties: false
+            properties:
+                type:
+                    type: string
+                    const: orderedList
+                attrs:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                        start:
+                            type: integer
+                            minimum: 1
+                            maximum: 1000000
+                    required:
+                        - start
+                content:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ListItemNode'
+                    minItems: 1
+                    maxItems: 5000
+            required:
+                - type
+                - content
+        BlockNode:
+            oneOf:
+                - $ref: '#/components/schemas/ParagraphNode'
+                - $ref: '#/components/schemas/HeadingNode'
+                - $ref: '#/components/schemas/BulletListNode'
+                - $ref: '#/components/schemas/OrderedListNode'
+        StoryDocument:
+            type: object
+            additionalProperties: false
+            properties:
+                type:
+                    type: string
+                    const: doc
+                content:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/BlockNode'
+                    minItems: 1
+                    maxItems: 5000
+            required:
+                - type
+                - content
+            description:
+                Tiptap-compatible document. Empty story is a document with one
+                empty paragraph. Server additionally limits compact UTF-8 JSON to 262144 bytes,
+                nesting to 16 and all nodes to 5000; visible text is at most 20000 Unicode
+                code points including one newline between text blocks. Unknown attributes/nodes/marks,
+                duplicate mark types and unsafe URLs are rejected. HTTP/HTTPS URLs require
+                a host and forbid embedded credentials/control characters. These cross-field/tree
+                limits are not fully expressible in OpenAPI.
+        CreateAdventure:
+            type: object
+            additionalProperties: false
+            properties:
+                creation_key:
+                    type: string
+                    format: uuid
+                title:
+                    type:
+                        - string
+                        - 'null'
+                    maxLength: 160
+                    description:
+                        Trim whitespace. Missing, null or blank generates a creation-date
+                        title in UTC. Explicit nonblank title is preserved after trim.
+                story_format_version:
+                    type: integer
+                    const: 1
+                    default: 1
+                story:
+                    $ref: '#/components/schemas/StoryDocument'
+                location:
+                    type:
+                        - string
+                        - 'null'
+                    maxLength: 200
+                    description: Trim; blank becomes null. Optional for drafts.
+                travel_start_date: &id004
+                    type:
+                        - string
+                        - 'null'
+                    format: date
+                travel_end_date: *id004
+            required:
+                - creation_key
+            description:
+                Unknown fields, including ownership/publication/version input,
+                are rejected. Missing story becomes an empty paragraph document. End date
+                requires start and must not precede it. Future dates allowed in drafts. Dates
+                do not affect feed ordering.
+        AdventureSummary:
+            type: object
+            additionalProperties: false
+            properties:
+                id: &id005
+                    type: integer
+                    minimum: 1
+                title: &id006
+                    type: string
+                    minLength: 1
+                    maxLength: 160
+                location: &id007
+                    type:
+                        - string
+                        - 'null'
+                    maxLength: 200
+                travel_start_date: *id004
+                travel_end_date: *id004
+                status: &id008
+                    type: string
+                    const: draft
+                version: &id009
+                    type: integer
+                    minimum: 1
+                published_at: &id010
+                    type:
+                        - string
+                        - 'null'
+                    format: date-time
+                first_published_at: &id011
+                    type:
+                        - string
+                        - 'null'
+                    format: date-time
+                created_at: &id012
+                    type: string
+                    format: date-time
+                updated_at: &id013
+                    type: string
+                    format: date-time
+                page_path: &id014
+                    type: string
+                    pattern: ^/adventures/[1-9][0-9]*/[^/]+$
+            required:
+                - id
+                - title
+                - location
+                - travel_start_date
+                - travel_end_date
+                - status
+                - version
+                - published_at
+                - first_published_at
+                - created_at
+                - updated_at
+                - page_path
+            description:
+                Owner-only draft summary. No email, user secrets, creation key
+                or internal ownership IDs. Publication fields are null in first-slice responses.
+                Dates/timestamps use UTC; travel dates remain calendar values.
+        Adventure:
+            type: object
+            additionalProperties: false
+            properties:
+                id: *id005
+                title: *id006
+                location: *id007
+                travel_start_date: *id004
+                travel_end_date: *id004
+                status: *id008
+                version: *id009
+                published_at: *id010
+                first_published_at: *id011
+                created_at: *id012
+                updated_at: *id013
+                page_path: *id014
+                story_format_version:
+                    type: integer
+                    const: 1
+                story:
+                    $ref: '#/components/schemas/StoryDocument'
+            required:
+                - id
+                - title
+                - location
+                - travel_start_date
+                - travel_end_date
+                - status
+                - version
+                - published_at
+                - first_published_at
+                - created_at
+                - updated_at
+                - page_path
+                - story_format_version
+                - story
+        AdventureResponse:
+            type: object
+            additionalProperties: false
+            properties:
+                data:
+                    $ref: '#/components/schemas/Adventure'
+            required:
+                - data
+        AdventureCollection:
+            type: object
+            additionalProperties: false
+            properties:
+                data:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AdventureSummary'
+                    minItems: 0
+                    maxItems: 12
+                links:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                        prev:
+                            type:
+                                - string
+                                - 'null'
+                            format: uri-reference
+                        next:
+                            type:
+                                - string
+                                - 'null'
+                            format: uri-reference
+                    required:
+                        - prev
+                        - next
+                meta:
+                    type: object
+                    additionalProperties: false
+                    properties:
+                        per_page:
+                            type: integer
+                            const: 12
+                        next_cursor:
+                            type:
+                                - string
+                                - 'null'
+                            maxLength: 2048
+                        prev_cursor:
+                            type:
+                                - string
+                                - 'null'
+                            maxLength: 2048
+                    required:
+                        - per_page
+                        - next_cursor
+                        - prev_cursor
+            required:
+                - data
+                - links
+                - meta
+        Error:
+            type: object
+            additionalProperties: false
+            properties:
+                message:
+                    type: string
+            required:
+                - message
+        ValidationError:
+            type: object
+            additionalProperties: false
+            properties:
+                message:
+                    type: string
+                errors:
+                    type: object
+                    minProperties: 1
+                    additionalProperties:
+                        type: array
+                        items:
+                            type: string
+                        minItems: 1
+                        maxItems: 20
+            required:
+                - message
+                - errors
+    responses:
+        Unauthenticated:
+            description: No authenticated session. Never redirects JSON clients to login.
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        message: Unauthenticated.
+        NotFound:
+            description:
+                Missing, nonowned or trashed adventure; identical response avoids
+                existence disclosure.
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        message: Not found.
+        CsrfMismatch:
+            description:
+                CSRF token invalid/missing under the configured default forgery
+                protection. Authentication and CSRF middleware order may produce this before
+                401.
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        message: CSRF token mismatch.
+        Validation:
+            description:
+                Field validation or unknown input failed. Nested story errors use
+                dot-separated field paths.
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/ValidationError'
+                    example:
+                        message: The given data was invalid.
+                        errors:
+                            title:
+                                - The title must not exceed 160 characters.
+        CreationConflict:
+            description:
+                Same owner creation_key reused with a different normalized request,
+                or its adventure is no longer an available draft. No resurrection.
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        message: Creation key conflicts with an existing request.
+        PayloadTooLarge:
+            description:
+                Decoded request body exceeds 524288 bytes. Application must return
+                JSON; deployment request limits must be aligned.
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/Error'
+                    example:
+                        message: Request body is too large.

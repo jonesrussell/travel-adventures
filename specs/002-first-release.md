@@ -11,7 +11,7 @@ An author creates a draft, adds a story and location, attaches photos or a short
 - A01: Registration, sign-in and sign-out work with server-side validation and meaningful errors.
 - A02: Authenticated authors create drafts. The server assigns ownership.
 - A03: Drafts are visible only to their author. Public lists and direct URLs cannot expose drafts or their media.
-- A04: Publishing requires valid title/story and all attached media to be ready. Failed processing cannot produce a broken published adventure.
+- A04: Publishing requires valid title/story, a location and all attached media to be ready. Failed processing cannot produce a broken published adventure.
 - A05: Feed pagination is stable and adventure detail/profile show published content.
 - A06: Editing/deletion requires ownership. Another account cannot modify an adventure or attach/remove its media.
 - A07: Photos and reels upload within explicitly specified limits. Invalid content is rejected; processing states and failures are visible to the author.
@@ -36,3 +36,7 @@ Payments, messaging, recommendation algorithms, native mobile rebuild and trip p
 ## Evidence
 
 Pending implementation.
+
+## Current stage planning
+
+Adventure creation and publishing is being refined in `specs/003-adventures.md` and the readable `docs/adventure-planner.html` sidecar. It remains Draft; proposals and unresolved decisions do not authorize implementation.

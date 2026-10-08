@@ -22,7 +22,7 @@ Sharing is the working product direction. Trip planning, tracking, payments, mes
 ## Decisions still open
 
 - Intended initial audience and public launch scope.
-- Whether launch supports public content only or additional visibility levels.
+- MVP visibility is agreed: private drafts and public published adventures. Unlisted and followers-only sharing are deferred.
 - Reel duration, upload limits, formats and storage provider.
 - Hosting target, operating budget and moderation owner.
 
