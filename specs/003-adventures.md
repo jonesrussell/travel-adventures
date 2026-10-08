@@ -211,7 +211,11 @@ Launch audience remains a later-stage decision.
 
 ## Ready gate
 
-Private draft create/list/view is Ready for implementation: data, permissions, substantive OpenAPI schemas, failure examples and acceptance coverage are designed. The full creation/publishing stage remains Draft for later contract extensions. Browser coverage enters with actual autosave/publishing flows. Contract lint passed through Redocly directly and npm; one initial Windows Node shutdown assertion was not reproduced on later runs. No product endpoints or behavior tests exist yet. PR file paths remain forecasts.
+### Storage implementation boundary
+
+Step 3 adds storage and owner policies only. User deletion is restricted while adventure rows exist, including trash, so a future account-deletion workflow must explicitly handle adventure retention and media cleanup. Creation-key uniqueness is stored per owner; replay handling and title generation belong to the next endpoint slice.
+
+Private draft create/list/view is Ready for implementation: data, permissions, substantive OpenAPI schemas, failure examples and acceptance coverage are designed. The full creation/publishing stage remains Draft for later contract extensions. Browser coverage enters with actual autosave/publishing flows. Contract lint passed through Redocly directly and npm; one initial Windows Node shutdown assertion was not reproduced on later runs. Storage and owner policies are implemented; eight SQLite behavior tests and two PostgreSQL transaction tests pass. The additive migration is applied to the WSL PostgreSQL database and verified through Boost. No product endpoints exist yet. Remaining PR file paths are forecasts. Work is paused after step 3 on codex/adventure-draft-storage, with planning baseline f504a16 committed.
 
 ## Readable planner
 
